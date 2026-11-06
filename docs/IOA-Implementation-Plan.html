@@ -1,0 +1,1315 @@
+<title>IOA Governance Platform — Implementation Plan</title>
+<style>
+/* ── Tokens ─────────────────────────────────────────────────── */
+:root {
+  --c-ground:   #F4F7FB;
+  --c-surface:  #FFFFFF;
+  --c-ink-1:    #0B1629;
+  --c-ink-2:    #3D526A;
+  --c-ink-3:    #7089A8;
+  --c-border:   #C9D5E8;
+  --c-accent:   #1B49CC;
+
+  --c-p1:       #1B49CC;
+  --c-p2:       #B91C1C;
+  --c-p3:       #0F766E;
+  --c-p4:       #6D28D9;
+
+  --c-existing: #059669;
+  --c-partial:  #B45309;
+  --c-new:      #1B49CC;
+
+  --c-p1-bg:    #EEF3FF;
+  --c-p2-bg:    #FEF2F2;
+  --c-p3-bg:    #F0FDFA;
+  --c-p4-bg:    #F5F3FF;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-ground:   #080E1C;
+    --c-surface:  #0D1829;
+    --c-ink-1:    #CBD5E6;
+    --c-ink-2:    #8BA0BB;
+    --c-ink-3:    #4E6480;
+    --c-border:   #1A2D47;
+    --c-accent:   #5B8EF0;
+    --c-p1:       #5B8EF0;
+    --c-p2:       #F87171;
+    --c-p3:       #2DD4BF;
+    --c-p4:       #A78BFA;
+    --c-existing: #34D399;
+    --c-partial:  #FCD34D;
+    --c-new:      #5B8EF0;
+    --c-p1-bg:    #0E1829;
+    --c-p2-bg:    #1A0909;
+    --c-p3-bg:    #061512;
+    --c-p4-bg:    #120B1E;
+  }
+}
+:root[data-theme="dark"] {
+  --c-ground:   #080E1C;
+  --c-surface:  #0D1829;
+  --c-ink-1:    #CBD5E6;
+  --c-ink-2:    #8BA0BB;
+  --c-ink-3:    #4E6480;
+  --c-border:   #1A2D47;
+  --c-accent:   #5B8EF0;
+  --c-p1:       #5B8EF0;
+  --c-p2:       #F87171;
+  --c-p3:       #2DD4BF;
+  --c-p4:       #A78BFA;
+  --c-existing: #34D399;
+  --c-partial:  #FCD34D;
+  --c-new:      #5B8EF0;
+  --c-p1-bg:    #0E1829;
+  --c-p2-bg:    #1A0909;
+  --c-p3-bg:    #061512;
+  --c-p4-bg:    #120B1E;
+}
+:root[data-theme="light"] {
+  --c-ground:   #F4F7FB;
+  --c-surface:  #FFFFFF;
+  --c-ink-1:    #0B1629;
+  --c-ink-2:    #3D526A;
+  --c-ink-3:    #7089A8;
+  --c-border:   #C9D5E8;
+  --c-accent:   #1B49CC;
+  --c-p1:       #1B49CC;
+  --c-p2:       #B91C1C;
+  --c-p3:       #0F766E;
+  --c-p4:       #6D28D9;
+  --c-existing: #059669;
+  --c-partial:  #B45309;
+  --c-new:      #1B49CC;
+  --c-p1-bg:    #EEF3FF;
+  --c-p2-bg:    #FEF2F2;
+  --c-p3-bg:    #F0FDFA;
+  --c-p4-bg:    #F5F3FF;
+}
+
+/* ── Reset & Base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  background: var(--c-ground);
+  color: var(--c-ink-1);
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.55;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────── */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--c-surface);
+  border-right: 1px solid var(--c-border);
+  padding: 28px 0 40px;
+}
+.sidebar-header {
+  padding: 0 18px 20px;
+  border-bottom: 1px solid var(--c-border);
+  margin-bottom: 12px;
+}
+.sidebar-header .logo-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-ink-3);
+  margin-bottom: 4px;
+}
+.sidebar-header .doc-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 13px;
+  color: var(--c-ink-1);
+  line-height: 1.35;
+  font-weight: 700;
+}
+.sidebar nav { padding: 0 10px; }
+.phase-nav { margin-bottom: 4px; }
+.phase-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-ink-2);
+  text-decoration: none;
+}
+.phase-nav-header:hover { background: var(--c-ground); }
+.phase-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.epic-nav-list { padding: 0 0 6px 23px; }
+.epic-nav-item a {
+  display: block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  color: var(--c-ink-3);
+  text-decoration: none;
+  font-family: 'Courier New', Courier, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.epic-nav-item a:hover { color: var(--c-accent); background: var(--c-ground); }
+
+/* ── Main ───────────────────────────────────────────────────── */
+.main { flex: 1; min-width: 0; padding: 48px 52px 80px; max-width: 920px; }
+
+/* ── Document Header ────────────────────────────────────────── */
+.doc-header { margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--c-border); }
+.doc-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-ink-3);
+  margin-bottom: 10px;
+}
+.doc-h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--c-ink-1);
+  line-height: 1.2;
+  text-wrap: balance;
+  margin-bottom: 12px;
+}
+.doc-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--c-ink-3);
+  margin-bottom: 16px;
+}
+.doc-meta span { display: flex; align-items: center; gap: 5px; }
+.doc-summary {
+  font-size: 14.5px;
+  color: var(--c-ink-2);
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+/* ── Current State ──────────────────────────────────────────── */
+.current-state {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 48px;
+}
+.current-state h2 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-3);
+  margin-bottom: 14px;
+}
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--c-ink-2);
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-green { background: var(--c-existing); }
+.dot-amber { background: var(--c-partial); }
+.dot-blue  { background: var(--c-new); }
+
+.legend { display: flex; gap: 20px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--c-border); flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--c-ink-3); }
+
+/* ── Phase Section ──────────────────────────────────────────── */
+.phase-section { margin-bottom: 56px; }
+.phase-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid;
+}
+.phase-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+}
+.phase-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-ink-1);
+}
+.phase-subtitle {
+  font-size: 13px;
+  color: var(--c-ink-3);
+  margin-left: auto;
+}
+
+/* phase 1 */
+.p1 .phase-header  { border-color: var(--c-p1); }
+.p1 .phase-label   { background: var(--c-p1-bg); color: var(--c-p1); }
+/* phase 2 */
+.p2 .phase-header  { border-color: var(--c-p2); }
+.p2 .phase-label   { background: var(--c-p2-bg); color: var(--c-p2); }
+/* phase 3 */
+.p3 .phase-header  { border-color: var(--c-p3); }
+.p3 .phase-label   { background: var(--c-p3-bg); color: var(--c-p3); }
+/* phase 4 */
+.p4 .phase-header  { border-color: var(--c-p4); }
+.p4 .phase-label   { background: var(--c-p4-bg); color: var(--c-p4); }
+
+/* ── Epic Card ──────────────────────────────────────────────── */
+.epic {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-left-width: 3px;
+  border-radius: 5px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.p1 .epic { border-left-color: var(--c-p1); }
+.p2 .epic { border-left-color: var(--c-p2); }
+.p3 .epic { border-left-color: var(--c-p3); }
+.p4 .epic { border-left-color: var(--c-p4); }
+
+.epic-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.epic-header:hover { background: var(--c-ground); }
+.epic-id {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-ink-3);
+  margin-top: 2px;
+  flex-shrink: 0;
+  min-width: 54px;
+}
+.epic-meta { flex: 1; min-width: 0; }
+.epic-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-ink-1);
+  line-height: 1.25;
+  margin-bottom: 5px;
+}
+.epic-desc {
+  font-size: 12.5px;
+  color: var(--c-ink-2);
+  line-height: 1.4;
+}
+.epic-badges { display: flex; gap: 6px; align-items: center; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+.badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.badge-existing { background: color-mix(in srgb, var(--c-existing) 15%, transparent); color: var(--c-existing); }
+.badge-partial  { background: color-mix(in srgb, var(--c-partial)  15%, transparent); color: var(--c-partial); }
+.badge-new      { background: color-mix(in srgb, var(--c-new)      12%, transparent); color: var(--c-new); }
+.badge-status-done    { background: color-mix(in srgb, var(--c-existing) 18%, transparent); color: var(--c-existing); font-weight: 700; }
+.badge-status-partial { background: color-mix(in srgb, var(--c-partial)  18%, transparent); color: var(--c-partial); font-weight: 700; }
+.badge-status-open    { background: var(--c-ground); color: var(--c-ink-3); border: 1px solid var(--c-border); font-weight: 700; }
+.badge-service {
+  background: var(--c-ground);
+  color: var(--c-ink-3);
+  border: 1px solid var(--c-border);
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+}
+
+/* ── Epic Body ──────────────────────────────────────────────── */
+.epic-body { padding: 0 20px 16px 20px; }
+.epic-body.collapsed { display: none; }
+
+.feature { margin-bottom: 14px; }
+.feature-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-ink-3);
+  margin-bottom: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-border);
+}
+.story-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.story {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--c-ground);
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  padding: 4px 9px;
+  font-size: 12px;
+  color: var(--c-ink-2);
+}
+.story-id {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10.5px;
+  color: var(--c-ink-3);
+  flex-shrink: 0;
+}
+
+/* ── Divider ────────────────────────────────────────────────── */
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 40px 0; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 780px) {
+  body { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--c-border); padding: 16px 0; }
+  .sidebar nav { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px; }
+  .phase-nav { margin-bottom: 0; }
+  .epic-nav-list { display: none; }
+  .main { padding: 28px 20px 60px; max-width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .epic-body { transition: none !important; }
+}
+</style>
+
+<nav class="sidebar" aria-label="Document navigation">
+  <div class="sidebar-header">
+    <div class="logo-label">IOA Governance Platform</div>
+    <div class="doc-title">Product Vision Implementation Plan</div>
+  </div>
+  <nav>
+    <div class="phase-nav">
+      <a href="#phase1" class="phase-nav-header">
+        <span class="phase-dot" style="background:var(--c-p1)"></span>
+        Phase 1 — Foundation
+      </a>
+      <ul class="epic-nav-list">
+        <li class="epic-nav-item"><a href="#ep101">EP-101 Credential Detection</a></li>
+        <li class="epic-nav-item"><a href="#ep102">EP-102 Runtime Telemetry</a></li>
+        <li class="epic-nav-item"><a href="#ep103">EP-103 Decision History</a></li>
+        <li class="epic-nav-item"><a href="#ep104">EP-104 Waiver Management</a></li>
+        <li class="epic-nav-item"><a href="#ep105">EP-105 Violation Lifecycle</a></li>
+      </ul>
+    </div>
+    <div class="phase-nav">
+      <a href="#phase2" class="phase-nav-header">
+        <span class="phase-dot" style="background:var(--c-p2)"></span>
+        Phase 2 — Enforcement
+      </a>
+      <ul class="epic-nav-list">
+        <li class="epic-nav-item"><a href="#ep201">EP-201 Policy Enforcement</a></li>
+        <li class="epic-nav-item"><a href="#ep202">EP-202 Approval Gates</a></li>
+        <li class="epic-nav-item"><a href="#ep203">EP-203 Kill Switch</a></li>
+        <li class="epic-nav-item"><a href="#ep204">EP-204 Agent Identity</a></li>
+      </ul>
+    </div>
+    <div class="phase-nav">
+      <a href="#phase3" class="phase-nav-header">
+        <span class="phase-dot" style="background:var(--c-p3)"></span>
+        Phase 3 — Assurance
+      </a>
+      <ul class="epic-nav-list">
+        <li class="epic-nav-item"><a href="#ep301">EP-301 Evidence Collectors</a></li>
+        <li class="epic-nav-item"><a href="#ep302">EP-302 Control Testing</a></li>
+        <li class="epic-nav-item"><a href="#ep303">EP-303 Prompt Governance</a></li>
+        <li class="epic-nav-item"><a href="#ep304">EP-304 Data Lineage</a></li>
+        <li class="epic-nav-item"><a href="#ep305">EP-305 Anomaly Detection</a></li>
+      </ul>
+    </div>
+    <div class="phase-nav">
+      <a href="#phase4" class="phase-nav-header">
+        <span class="phase-dot" style="background:var(--c-p4)"></span>
+        Phase 4 — Enterprise
+      </a>
+      <ul class="epic-nav-list">
+        <li class="epic-nav-item"><a href="#ep401">EP-401 Framework Crosswalk</a></li>
+        <li class="epic-nav-item"><a href="#ep402">EP-402 Third-Party Risk</a></li>
+        <li class="epic-nav-item"><a href="#ep403">EP-403 Asset Ownership</a></li>
+        <li class="epic-nav-item"><a href="#ep404">EP-404 Attack-Path & ROI</a></li>
+      </ul>
+    </div>
+  </nav>
+</nav>
+
+<main class="main">
+
+  <!-- Document Header -->
+  <header class="doc-header">
+    <div class="doc-eyebrow">Implementation Plan · v1.0 · 2026-07-18</div>
+    <h1 class="doc-h1">IOA Governance Platform<br>Product Vision Roadmap</h1>
+    <div class="doc-meta">
+      <span>📋 20 Epics</span>
+      <span>🗂 4 Phases</span>
+      <span>🏗 8 Services</span>
+      <span>Source: IOA-Product Vision.docx</span>
+    </div>
+    <p class="doc-summary">
+      Structured implementation plan derived from the product vision document. Maps all 20 capability areas to the Epic&nbsp;→&nbsp;Feature&nbsp;→&nbsp;Story hierarchy, cross-referenced against current codebase state. Each epic is classified as <strong>existing</strong> (shipped), <strong>partial</strong> (foundation exists), or <strong>new</strong> (net-new build).
+    </p>
+  </header>
+
+  <!-- Current State -->
+  <section class="current-state">
+    <h2>Current Codebase State</h2>
+    <div class="status-grid">
+      <div class="status-item"><span class="status-dot dot-green"></span>Auth service — RS256 JWT, RBAC</div>
+      <div class="status-item"><span class="status-dot dot-green"></span>Per-service require-auth middleware</div>
+      <div class="status-item"><span class="status-dot dot-green"></span>SPA login, AuthGuard, CSRF</div>
+      <div class="status-item"><span class="status-dot dot-green"></span>Policy rule engine (Phases 1–4)</div>
+      <div class="status-item"><span class="status-dot dot-green"></span>MCP server/tool governance</div>
+      <div class="status-item"><span class="status-dot dot-green"></span>Workflow risk scoring + analysis</div>
+      <div class="status-item"><span class="status-dot dot-green"></span>Audit service + escalation</div>
+      <div class="status-item"><span class="status-dot dot-green"></span>MCP status/tool/decision history tables</div>
+      <div class="status-item"><span class="status-dot dot-amber"></span>Credential scanner (mcp-governance only)</div>
+      <div class="status-item"><span class="status-dot dot-amber"></span>Telemetry service (metrics, no correlation IDs)</div>
+      <div class="status-item"><span class="status-dot dot-amber"></span>Assurance evidence (manual entry only)</div>
+      <div class="status-item"><span class="status-dot dot-amber"></span>Violations (limited state machine)</div>
+      <div class="status-item"><span class="status-dot dot-amber"></span>Untrusted-publisher policy (basic)</div>
+      <div class="status-item"><span class="status-dot dot-blue"></span>Runtime enforcement modes</div>
+      <div class="status-item"><span class="status-dot dot-blue"></span>Waiver management</div>
+      <div class="status-item"><span class="status-dot dot-blue"></span>Kill switch / containment</div>
+      <div class="status-item"><span class="status-dot dot-blue"></span>Data lineage</div>
+      <div class="status-item"><span class="status-dot dot-blue"></span>Prompt/agent governance registry</div>
+      <div class="status-item"><span class="status-dot dot-blue"></span>Regulatory framework crosswalk</div>
+      <div class="status-item"><span class="status-dot dot-blue"></span>ROI Intelligence (placeholder only)</div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="status-dot dot-green"></span>Existing — shipped</div>
+      <div class="legend-item"><span class="status-dot dot-amber"></span>Partial — foundation exists, gaps remain</div>
+      <div class="legend-item"><span class="status-dot dot-blue"></span>New — net-new build</div>
+    </div>
+  </section>
+
+  <!-- ══ PHASE 1 ══ -->
+  <section class="phase-section p1" id="phase1">
+    <div class="phase-header">
+      <span class="phase-label">Phase 1</span>
+      <span class="phase-title">Complete the Control Foundation</span>
+      <span class="phase-subtitle">Priority: Immediate</span>
+    </div>
+
+    <!-- EP-101 -->
+    <div class="epic" id="ep101">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-101</div>
+        <div class="epic-meta">
+          <div class="epic-name">Credential Exposure Detection &amp; Remediation</div>
+          <div class="epic-desc">Extend credential-scanner.js from mcp-governance to all surfaces. Automate violation creation and remediation tracking.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">audit</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Scanner surface expansion</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-101-S1</span>Scan workflow code nodes and prompt templates</div>
+            <div class="story"><span class="story-id">EP-101-S2</span>Scan environment variables and webhook payloads at ingest</div>
+            <div class="story"><span class="story-id">EP-101-S3</span>Scan mcp-governance redaction-patterns API responses</div>
+            <div class="story"><span class="story-id">EP-101-S4</span>Schedule automated scans on asset create/update</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Automated violation &amp; trust ceiling</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-101-S5</span>Auto-create CRITICAL violation on confirmed credential exposure</div>
+            <div class="story"><span class="story-id">EP-101-S6</span>Apply trust ceiling to affected MCP server immediately</div>
+            <div class="story"><span class="story-id">EP-101-S7</span>Redact exposed value from all evidence records and logs</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Remediation tracking</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-101-S8</span>Rotation recommendation with rotation_confirmed field</div>
+            <div class="story"><span class="story-id">EP-101-S9</span>Revocation verification check (re-scan after rotation claimed)</div>
+            <div class="story"><span class="story-id">EP-101-S10</span>SPA: credential exposure panel in WorkflowGovernance + MCP pages</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-102 -->
+    <div class="epic" id="ep102">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-102</div>
+        <div class="epic-meta">
+          <div class="epic-name">Unified Runtime Telemetry &amp; Correlation IDs</div>
+          <div class="epic-desc">Define a correlation ID standard that propagates through business request → workflow → model → MCP → tool. Extend telemetry-service to capture OpenTelemetry GenAI fields.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">telemetry</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">mcp-governance</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Correlation ID standard</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-102-S1</span>Define correlation_id schema: UUID propagated in x-correlation-id header</div>
+            <div class="story"><span class="story-id">EP-102-S2</span>Add correlation_id to telemetry.events and all child tables</div>
+            <div class="story"><span class="story-id">EP-102-S3</span>Propagate correlation_id through workflow-governance → mcp-governance → telemetry calls</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Extended telemetry payload (GenAI conventions)</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-102-S4</span>Capture model ID, prompt-template version, input/output token counts</div>
+            <div class="story"><span class="story-id">EP-102-S5</span>Capture MCP server + tool, latency, failure status, estimated cost</div>
+            <div class="story"><span class="story-id">EP-102-S6</span>Capture data classification label and policy decision outcome per call</div>
+            <div class="story"><span class="story-id">EP-102-S7</span>Capture user/service identity, workflow ID, business transaction ID</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Telemetry dashboard</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-102-S8</span>Telemetry page: correlation chain drill-down (click event → full chain)</div>
+            <div class="story"><span class="story-id">EP-102-S9</span>Cost and token-usage trend charts on Telemetry page</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-103 -->
+    <div class="epic" id="ep103">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-103</div>
+        <div class="epic-meta">
+          <div class="epic-name">Decision &amp; Approval History (Append-Only)</div>
+          <div class="epic-desc">Every approval, rejection, classification change, and waiver must be preserved immutably. MCP history tables already exist; governance violations and approval decisions do not.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">audit</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Governance decision history tables</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-103-S1</span>DB migration: governance.violation_history (prev_status, new_status, actor, reason, policy_version, evidence_id)</div>
+            <div class="story"><span class="story-id">EP-103-S2</span>DB migration: governance.approval_decision_history (asset_type, asset_id, decision, actor, role, supporting_evidence, expiration)</div>
+            <div class="story"><span class="story-id">EP-103-S3</span>Service: auto-write history row on every violation status update</div>
+            <div class="story"><span class="story-id">EP-103-S8</span><em>Remediation, found 2026-10-08:</em> the <code>actor</code>/<code>role</code> fields on approval_decision_history (S2 above), plus audit-service's own event <code>actor_id</code>/<code>actor_type</code> and governance-service's approval-chain <code>requested_by</code>, are all taken verbatim from the request body with no cross-check against the authenticated caller — append-only does not mean non-forgeable if the actor field itself is unverified. Tracked as S2.9 in <code>work/epics/e2-iso42001-hardening/</code>; see <code>docs/baseline-assessment-2026-10.md</code> findings F-04/F-05.</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Append-only enforcement</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-103-S4</span>DB trigger: BEFORE DELETE on history tables → raise exception</div>
+            <div class="story"><span class="story-id">EP-103-S5</span>DB trigger: BEFORE UPDATE on history tables → raise exception</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — History UI</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-103-S6</span>Violations page: expandable history timeline per violation</div>
+            <div class="story"><span class="story-id">EP-103-S7</span>MCP server detail: unified status + decision history tab</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-104 -->
+    <div class="epic" id="ep104">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-104</div>
+        <div class="epic-meta">
+          <div class="epic-name">Waiver Management</div>
+          <div class="epic-desc">Formal exception workflow with business justification, risk acceptance, compensating controls, expiration dates, and automatic reopening. "Waived" and "resolved" are distinct states.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">governance</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Waiver data model</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-104-S1</span>DB migration: governance.waivers (violation_id, policy_being_waived, justification, risk_acceptance, compensating_controls, approver, scope, valid_from, expires_at, renewal_limit, remediation_commitment, residual_risk)</div>
+            <div class="story"><span class="story-id">EP-104-S2</span>Violation state machine extension: add waiver_requested → waived_temporarily → reopened states</div>
+            <div class="story"><span class="story-id">EP-104-S3</span>Scheduled job: reopen waiver_temporarily violations when expires_at passes</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Waiver API</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-104-S4</span>POST /violations/:id/waivers — submit waiver request (requires write permission)</div>
+            <div class="story"><span class="story-id">EP-104-S5</span>PATCH /waivers/:id/approve — approve (different actor from requester enforced)</div>
+            <div class="story"><span class="story-id">EP-104-S6</span>GET /waivers — list with expiry filter and status</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Waiver UI</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-104-S7</span>Violations page: Request Waiver action + waiver detail panel</div>
+            <div class="story"><span class="story-id">EP-104-S8</span>Admin: waivers list with expiry countdown and pending approvals queue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-105 -->
+    <div class="epic" id="ep105">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-105</div>
+        <div class="epic-meta">
+          <div class="epic-name">Violation Lifecycle &amp; Starter Policy Pack</div>
+          <div class="epic-desc">Full state machine for violations (open → acknowledged → remediating → resolved → reopened). Automatic reconciliation on asset change. Starter MCP policy pack covering the most critical governance gaps.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">mcp-governance</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Violation state machine</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-105-S1</span>Extend violations.status CHECK to: open, acknowledged, remediating, waiver_requested, waived_temporarily, resolved, reopened</div>
+            <div class="story"><span class="story-id">EP-105-S2</span>API: PATCH /violations/:id/acknowledge, /remediating, /resolve</div>
+            <div class="story"><span class="story-id">EP-105-S3</span>State guard: resolved → reopened triggered by re-evaluation finding same condition</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Automatic reconciliation</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-105-S4</span>Re-evaluate applicable policies when MCP server/tool is updated</div>
+            <div class="story"><span class="story-id">EP-105-S5</span>Re-evaluate when approval expires or is revoked</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Starter MCP policy pack</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-105-S6</span>Policy: Untrusted publisher — enforce for servers with no verified publisher</div>
+            <div class="story"><span class="story-id">EP-105-S7</span>Policy: Expired approval — flag servers/tools past approved_until date</div>
+            <div class="story"><span class="story-id">EP-105-S8</span>Policy: Credential exposure detected — auto-apply from EP-101 scanner</div>
+            <div class="story"><span class="story-id">EP-105-S9</span>Policy: Tool definition drift — already partially implemented, complete enforcement</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PHASE 2 ══ -->
+  <section class="phase-section p2" id="phase2">
+    <div class="phase-header">
+      <span class="phase-label">Phase 2</span>
+      <span class="phase-title">Move into Active Enforcement</span>
+      <span class="phase-subtitle">Priority: High</span>
+    </div>
+
+    <!-- EP-201 -->
+    <div class="epic" id="ep201">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-201</div>
+        <div class="epic-meta">
+          <div class="epic-name">Runtime Policy Enforcement Modes</div>
+          <div class="epic-desc">The most important transition: IOA moves from a governance system of record to a genuine control plane. Policies operate in Observe / Warn / Enforce mode. Kong and n8n are the first enforcement integration points; AI model gateways are the third (F5).</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">ai-inference</span>
+          <span class="badge badge-service">kong</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Policy enforcement mode field</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-201-S1</span>DB migration: add enforcement_mode ENUM ('observe','warn','enforce') to governance.policies</div>
+            <div class="story"><span class="story-id">EP-201-S2</span>API: PATCH /policies/:id/enforcement-mode — requires admin + audit trail write</div>
+            <div class="story"><span class="story-id">EP-201-S3</span>Governance UI: mode selector chip on policy detail (Observe / Warn / Enforce)</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Kong gateway enforcement</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-201-S4</span>Kong plugin or pre-request webhook: call governance-service /enforce endpoint before MCP proxy requests</div>
+            <div class="story"><span class="story-id">EP-201-S5</span>Enforce mode: return 403 with policy_id + violation_id on block decision</div>
+            <div class="story"><span class="story-id">EP-201-S6</span>Warn mode: pass through, create violation, add X-IOA-Warning header</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — n8n pre-execution policy check</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-201-S7</span>n8n: IOA governance check as workflow start trigger (webhook to workflow-governance-service)</div>
+            <div class="story"><span class="story-id">EP-201-S8</span>Workflow-governance: evaluate all bound policies before execution approval</div>
+            <div class="story"><span class="story-id">EP-201-S9</span>Human approval gate response path for enforce-mode workflows requiring sign-off</div>
+            <div class="story"><span class="story-id">EP-201-S15</span><em>Remediation, found 2026-10-08:</em> EP-201-S7/S8's enforcement-check route (and EP-102's execution-event) have no signature/replay protection at all — n8n Cloud can't hold the internal service key, but there's no HMAC fallback either. governance-service's own <code>/enforce</code> (S4/S5 above) also has no permission gate: any authenticated session, any role, can call it directly. Tracked as S2.1 (widened) + S2.8 in <code>work/epics/e2-iso42001-hardening/</code>; see <code>docs/baseline-assessment-2026-10.md</code> findings F-01/F-02.</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F4 — Enforcement event recording</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-201-S10</span>DB migration: governance.enforcement_events (policy_id, asset_type, asset_id, mode, outcome, correlation_id, timestamp)</div>
+            <div class="story"><span class="story-id">EP-201-S11</span>Dashboard: enforcement activity count + block/warn ratio card</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F5 — AI model gateway enforcement</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-201-S12</span>New /enforce asset_type 'ai_model'; POST /inference calls it before creating a request, blocking (enforce) or warning on models.is_sanctioned = false</div>
+            <div class="story"><span class="story-id">EP-201-S13</span>Same evaluator checks inference_requests.data_classification against a policy-configured max-allowed classification per provider — blocks in enforce mode</div>
+            <div class="story"><span class="story-id">EP-201-S14</span>Scheduled reaper (matching approval-expiration-reaper.js's pattern) proactively re-verifies approved servers' live config against materiality_hash, reusing the existing revert-to-pending/deprovision/incident path — closes the "only reacts to an explicit PUT" gap</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-202 -->
+    <div class="epic" id="ep202">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-202</div>
+        <div class="epic-meta">
+          <div class="epic-name">Human Approval Gates</div>
+          <div class="epic-desc">Multi-stage approval chains per risk tier. Expiring approvals with automatic suspension. Reapproval triggers on material asset change.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">auth</span>
+          <span class="badge badge-service">escalation</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Risk-tier approval chains</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-202-S1</span>DB migration: governance.approval_chains (risk_tier, stages JSONB — approver_role, quorum, sequential)</div>
+            <div class="story"><span class="story-id">EP-202-S2</span>Approval workflow engine: multi-stage state machine, parallel and sequential support</div>
+            <div class="story"><span class="story-id">EP-202-S3</span>Separation of requester and approver enforced at API level</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Expiring approvals</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-202-S4</span>approved_until date on MCP server/tool approval records</div>
+            <div class="story"><span class="story-id">EP-202-S5</span>Scheduled job: auto-suspend assets when approved_until passes (create violation + trigger EP-203 containment)</div>
+            <div class="story"><span class="story-id">EP-202-S6</span>Reminder escalation: 30d, 7d, 1d before expiry → escalation-service incident</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Reapproval on material change</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-202-S7</span>Define materiality threshold (tool definition hash change, capability scope change)</div>
+            <div class="story"><span class="story-id">EP-202-S8</span>On material change: move approved asset to pending_review, notify approvers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-203 -->
+    <div class="epic" id="ep203">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-203</div>
+        <div class="epic-meta">
+          <div class="epic-name">Kill Switch &amp; Containment Controls</div>
+          <div class="epic-desc">Every production asset gets containment options: suspend, quarantine, read-only mode, rollback to last approved definition. Incident page exposes containment actions directly.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">escalation</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Containment status model</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-203-S1</span>DB migration: add containment_state ENUM ('active','suspended','quarantined','read_only') to mcp_servers, mcp_tools, workflows</div>
+            <div class="story"><span class="story-id">EP-203-S2</span>DB migration: governance.containment_log (asset_type, asset_id, action, actor, reason, timestamp)</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Containment actions API</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-203-S3</span>POST /assets/:type/:id/suspend — requires write + audit entry</div>
+            <div class="story"><span class="story-id">EP-203-S4</span>POST /assets/:type/:id/quarantine — full isolation, blocks enforcement pathway</div>
+            <div class="story"><span class="story-id">EP-203-S5</span>POST /assets/:type/:id/rollback — restore last approved definition snapshot</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Incident page containment UI</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-203-S6</span>Escalation page: inline Suspend / Quarantine / Rollback action buttons on incident detail</div>
+            <div class="story"><span class="story-id">EP-203-S7</span>Containment confirmation modal with reason field and full audit write</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-204 -->
+    <div class="epic" id="ep204">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-204</div>
+        <div class="epic-meta">
+          <div class="epic-name">Agent Identity &amp; Delegated Authorization</div>
+          <div class="epic-desc">Distinct identities for humans, service accounts, workflows, AI agents, and agent instances. Short-lived credentials, scope-limited tokens, delegation chains, revocation, and privilege escalation detection.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">auth</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">audit</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Agent identity registry</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-204-S1</span>DB migration: auth.agents (id, type ENUM('workflow','ai_agent','agent_instance','mcp_client','mcp_server','tool'), owner_user_id, created_at, expires_at, scope JSONB)</div>
+            <div class="story"><span class="story-id">EP-204-S2</span>Auth-service: issue short-lived agent credential (signed JWT, scope-limited, agent sub claim)</div>
+            <div class="story"><span class="story-id">EP-204-S3</span>Auth-service: revoke agent credential (revocation list checked in require-auth)</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Delegation chain recording</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-204-S4</span>DB migration: auth.delegation_records (initiating_user_id, agent_id, tool_id, authority_scope, created_at, expires_at)</div>
+            <div class="story"><span class="story-id">EP-204-S5</span>Propagate delegation_id through correlation chain (stored in telemetry event)</div>
+            <div class="story"><span class="story-id">EP-204-S6</span>Audit query: "who initiated, which agent acted, whose authority, what tool, what permissions"</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Privilege escalation detection</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-204-S7</span>Detect agent requesting scope beyond delegation record — create CRITICAL violation</div>
+            <div class="story"><span class="story-id">EP-204-S8</span>Detect confused-deputy pattern (agent using one principal's authority for another's request)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PHASE 3 ══ -->
+  <section class="phase-section p3" id="phase3">
+    <div class="phase-header">
+      <span class="phase-label">Phase 3</span>
+      <span class="phase-title">Build Continuous Assurance</span>
+      <span class="phase-subtitle">Priority: Medium</span>
+    </div>
+
+    <!-- EP-301 -->
+    <div class="epic" id="ep301">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-301</div>
+        <div class="epic-meta">
+          <div class="epic-name">Automated Evidence Collectors</div>
+          <div class="epic-desc">Pluggable collector framework replacing manual evidence entry. Integrates with Kong, n8n, Postgres, Docker, GitHub. Confidence levels: self-attested → system-collected → control-tested → independently verified.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-partial">◐ Partial</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">audit</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Collector framework</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-301-S1</span>Collector interface: {collect(): EvidenceRecord, schedule: cron, confidence: ConfidenceLevel}</div>
+            <div class="story"><span class="story-id">EP-301-S2</span>Kong collector: last route sync timestamp, active service count, upstream health</div>
+            <div class="story"><span class="story-id">EP-301-S3</span>n8n collector: workflow active status, last execution result, execution count</div>
+            <div class="story"><span class="story-id">EP-301-S4</span>Postgres collector: DB health, migration version, partition status</div>
+            <div class="story"><span class="story-id">EP-301-S5</span>Docker collector: container uptime, image digest, last restart</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Confidence model &amp; freshness</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-301-S6</span>DB migration: add confidence_level, collected_by, collected_at, expires_at to assurance_evidence</div>
+            <div class="story"><span class="story-id">EP-301-S7</span>Stale evidence alert: flag evidence older than configured threshold per control type</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Assurance UI upgrade</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-301-S8</span>Assurance page: confidence badge + last-collected timestamp per evidence record</div>
+            <div class="story"><span class="story-id">EP-301-S9</span>Manual evidence entry preserved; collector-sourced clearly distinguished</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-302 -->
+    <div class="epic" id="ep302">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-302</div>
+        <div class="epic-meta">
+          <div class="epic-name">Continuous Control Testing</div>
+          <div class="epic-desc">Scheduled tests that verify controls actually work — not just that they're configured. Results auto-create or refresh assurance evidence. Per NIST AI RMF: ongoing measurement, not one-time review.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">audit</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Control test registry</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-302-S1</span>DB migration: governance.control_tests (id, name, description, test_type, target_control_id, expected_outcome, schedule, last_run_at, last_result)</div>
+            <div class="story"><span class="story-id">EP-302-S2</span>Seed: built-in tests (retired server unreachable, unauthorized tool call blocked, rate limits active, correlation IDs present in logs)</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Test runner</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-302-S3</span>Test runner service: cron-driven, executes test against target, records pass/fail + evidence payload</div>
+            <div class="story"><span class="story-id">EP-302-S4</span>Failed control test → CRITICAL violation + escalation-service incident</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Evidence integration</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-302-S5</span>Passing test run: upsert assurance evidence with confidence = 'control_tested'</div>
+            <div class="story"><span class="story-id">EP-302-S6</span>Control testing dashboard: test history, pass rate trend, coverage by control type</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-303 -->
+    <div class="epic" id="ep303">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-303</div>
+        <div class="epic-meta">
+          <div class="epic-name">Prompt &amp; Agent Governance Registry</div>
+          <div class="epic-desc">Governed registry for system prompts, templates, guardrails, and agent instructions. Versioned, approval-gated, with drift detection parallel to existing MCP tool-definition drift.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-partial">◐ Partial</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">governance</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Prompt registry schema &amp; API</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-303-S1</span>DB migration: mcp_governance.prompt_registry (id, name, type ENUM('system','template','guardrail','tool_description'), content_hash, owner, purpose, approved_models JSONB, permitted_data_classes JSONB, approval_status, version)</div>
+            <div class="story"><span class="story-id">EP-303-S2</span>CRUD API: GET/POST/PUT /prompts — version on every update (no in-place edit)</div>
+            <div class="story"><span class="story-id">EP-303-S3</span>Rollback: POST /prompts/:id/rollback/:version</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Prompt drift detection</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-303-S4</span>Hash runtime prompt against registry on each workflow execution</div>
+            <div class="story"><span class="story-id">EP-303-S5</span>Unauthorized prompt change → violation (same pattern as tool-definition drift)</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Evaluation linkage</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-303-S6</span>Link evaluation results (from EP future) to prompt version before production approval</div>
+            <div class="story"><span class="story-id">EP-303-S7</span>SPA: Prompt Registry page under admin nav</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-304 -->
+    <div class="epic" id="ep304">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-304</div>
+        <div class="epic-meta">
+          <div class="epic-name">Data Lineage &amp; Sensitive Data Flow</div>
+          <div class="epic-desc">Graph of where information originates, travels, transforms, and exits organizational boundaries. Answers: "Was this model approved to receive this type of data for this business purpose?"</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">telemetry</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Lineage graph model</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-304-S1</span>DB migration: workflow_governance.lineage_nodes (correlation_id, node_type, node_id, data_classification, timestamp)</div>
+            <div class="story"><span class="story-id">EP-304-S2</span>DB migration: workflow_governance.lineage_edges (from_node_id, to_node_id, transformation_type)</div>
+            <div class="story"><span class="story-id">EP-304-S3</span>Populate lineage on telemetry event ingest (EP-102 correlation chain feeds this)</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — PII &amp; cross-border detection</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-304-S4</span>Tag PII data classifications on lineage nodes using existing redaction-patterns</div>
+            <div class="story"><span class="story-id">EP-304-S5</span>Detect external processor destinations (non-internal nodes) and classify data sent</div>
+            <div class="story"><span class="story-id">EP-304-S6</span>Cross-border transfer detection: flag when data_region of destination ≠ origin</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Lineage UI</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-304-S7</span>WorkflowGovernance: lineage graph visualization per workflow (DAG, color-coded by classification)</div>
+            <div class="story"><span class="story-id">EP-304-S8</span><em>Amendment, 2026-10-09:</em> the DAG proved aggregate ("4 calls to good-model") not actionable — no way to trace a node back to the n8n workflow/execution/node that produced it. Closed via <code>inference_requests.n8n_execution_id</code>/<code>n8n_node_name</code> (captured from the triggering n8n node's own <code>$execution.id</code>/<code>$node.name</code>), a lineage-node enrichment with a deep link, and a click-to-detail panel + "Open in n8n" action on the Lineage page. Tracked as S3.1 in <code>work/epics/e3-lineage-n8n-linkage/</code>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-305 -->
+    <div class="epic" id="ep305">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-305</div>
+        <div class="epic-meta">
+          <div class="epic-name">Behavioral Anomaly Detection &amp; Attack-Path Analysis</div>
+          <div class="epic-desc">Expected behavior baselines per agent/workflow. Runtime deviation scoring. Attack-path graph from a compromised component to reachable high-impact destinations.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-done">✓ Done</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">escalation</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Behavior baseline &amp; deviation scoring</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-305-S1</span>DB migration: workflow_governance.behavior_baselines (workflow_id, typical_tool_sequence JSONB, avg_latency_ms, typical_data_volume, max_loop_depth)</div>
+            <div class="story"><span class="story-id">EP-305-S2</span>Baseline derivation: compute from last 30 days of telemetry on workflow approval</div>
+            <div class="story"><span class="story-id">EP-305-S3</span>Runtime deviation: score each execution against baseline; alert on z-score > threshold</div>
+            <div class="story"><span class="story-id">EP-305-S4</span>Detect: unexpected tool sequences, excessive loops, unusual data volume, new destinations</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Attack-path analysis</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-305-S5</span>Build reachability graph: starting from each MCP server, enumerate reachable tools, shared credentials, high-impact destinations</div>
+            <div class="story"><span class="story-id">EP-305-S6</span>Identify single points of compromise, excessive scope, cross-agent trust paths</div>
+            <div class="story"><span class="story-id">EP-305-S7</span>SPA: Attack-path visualization panel on MCP server detail page</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PHASE 4 ══ -->
+  <section class="phase-section p4" id="phase4">
+    <div class="phase-header">
+      <span class="phase-label">Phase 4</span>
+      <span class="phase-title">Enterprise Scale &amp; Reporting</span>
+      <span class="phase-subtitle">Priority: Later</span>
+    </div>
+
+    <!-- EP-401 -->
+    <div class="epic" id="ep401">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-401</div>
+        <div class="epic-meta">
+          <div class="epic-name">Regulatory Framework Crosswalk</div>
+          <div class="epic-desc">Control library mapping IOA policies to NIST AI RMF, ISO/IEC 42001, SOC 2, OWASP GenAI, and internal standards. Generate evidence packages per framework on demand.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-open">○ Not Started</span>
+          <span class="badge badge-new">New</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">audit</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Control library</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-401-S1</span>DB migration: governance.control_library (id, name, description, framework, framework_control_id, policy_ids JSONB)</div>
+            <div class="story"><span class="story-id">EP-401-S2</span>Seed: NIST AI RMF Govern/Map/Measure/Manage mapped to existing IOA policies</div>
+            <div class="story"><span class="story-id">EP-401-S3</span>Seed: OWASP GenAI and Agentic top-10 mapped to MCP governance policies</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Evidence package generation</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-401-S4</span>API: GET /compliance/:framework/evidence-package — returns controls + evidence + exceptions + status</div>
+            <div class="story"><span class="story-id">EP-401-S5</span>Export: JSON + CSV; future PDF via headless render</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Compliance posture dashboard</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-401-S6</span>Dashboard: per-framework compliance percentage, control gap count, evidence freshness</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-402 -->
+    <div class="epic" id="ep402">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-402</div>
+        <div class="epic-meta">
+          <div class="epic-name">Third-Party &amp; Supply-Chain Risk</div>
+          <div class="epic-desc">Extends untrusted-publisher policy into a full vendor risk registry. Software bill of materials, model provenance, container image digests. Answers: "Exactly which code, model, prompt, tools, and data sources produced this decision?"</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-open">○ Not Started</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">mcp-governance</span>
+          <span class="badge badge-service">governance</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Publisher &amp; vendor risk registry</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-402-S1</span>Extend mcp_governance.publishers: add contract_status, security_assessment_date, data_processing_terms, hosting_regions, subprocessors JSONB, breach_history, model_training_policy, data_retention_policy</div>
+            <div class="story"><span class="story-id">EP-402-S2</span>Publisher risk score: computed from assessment fields, drives trust ceiling suggestions</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Software &amp; model provenance (SBOM)</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-402-S3</span>DB migration: governance.component_provenance (asset_type, asset_id, source_repo, commit_sha, build_id, container_digest, package_dependencies JSONB, sbom_json, signature_verified)</div>
+            <div class="story"><span class="story-id">EP-402-S4</span>Model provenance: model provider, version, prompt version, dataset version, deployment environment</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — Supply-chain risk scoring</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-402-S5</span>Supply-chain risk score per asset: unverified dependencies, stale SBOM, unsigned image → violation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-403 -->
+    <div class="epic" id="ep403">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-403</div>
+        <div class="epic-meta">
+          <div class="epic-name">Asset Ownership &amp; Separation of Duties</div>
+          <div class="epic-desc">Every governed asset requires a business owner, technical owner, and risk owner. Orphan detection. Configurable multi-stage approval workflows matching the enterprise operating model.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-partial">◐ Partial</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">governance</span>
+          <span class="badge badge-service">auth</span>
+          <span class="badge badge-service">escalation</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Ownership matrix</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-403-S1</span>DB migration: governance.asset_ownership (asset_type, asset_id, business_owner_id, technical_owner_id, risk_owner_id, data_owner_id, support_team, criticality, business_purpose, review_frequency)</div>
+            <div class="story"><span class="story-id">EP-403-S2</span>Orphaned asset detection: weekly job, escalation-service incident for unowned production assets</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Multi-stage approval engine</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-403-S3</span>Extend EP-202 approval chains: quorum support, parallel + sequential stages, escalation deadlines</div>
+            <div class="story"><span class="story-id">EP-403-S4</span>Notification integration: email (existing SMTP) + webhook to Slack/Teams on approval needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EP-404 -->
+    <div class="epic" id="ep404">
+      <div class="epic-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="epic-id">EP-404</div>
+        <div class="epic-meta">
+          <div class="epic-name">Business Value &amp; Risk Linkage (ROI Intelligence)</div>
+          <div class="epic-desc">Complete the ROI Intelligence placeholder. Risk/value matrix: high value + low risk → scale, high value + high risk → control, low value + high risk → retire. Differentiates IOA from compliance-only tools.</div>
+        </div>
+        <div class="epic-badges"><span class="badge badge-status-open">○ Not Started</span>
+          <span class="badge badge-partial">Partial</span>
+          <span class="badge badge-service">workflow-governance</span>
+          <span class="badge badge-service">telemetry</span>
+        </div>
+      </div>
+      <div class="epic-body">
+        <div class="feature">
+          <div class="feature-name">F1 — Business value tracking</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-404-S1</span>DB migration: workflow_governance.business_value (workflow_id, hours_recovered, cost_avoided, revenue_influenced, automation_cost, ai_usage_cost, failure_cost, incident_cost, period)</div>
+            <div class="story"><span class="story-id">EP-404-S2</span>API: POST /workflows/:id/business-value — manual entry by asset owner</div>
+            <div class="story"><span class="story-id">EP-404-S3</span>Derive AI usage cost from EP-102 token counts × provider pricing</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F2 — Risk-adjusted ROI</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-404-S4</span>Risk-adjusted ROI: (value - incident_cost - control_cost) / total_cost, weighted by risk score</div>
+            <div class="story"><span class="story-id">EP-404-S5</span>Risk/value quadrant matrix chart: each workflow as a point</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-name">F3 — ROI Intelligence page</div>
+          <div class="story-list">
+            <div class="story"><span class="story-id">EP-404-S6</span>Replace RoiIntelligence.jsx placeholder with live data from F1 + F2</div>
+            <div class="story"><span class="story-id">EP-404-S7</span>Quadrant recommendations: Scale / Control &amp; Monitor / Retire / Deprioritize per workflow</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  // Expand all epics by default so the content is immediately readable
+  document.querySelectorAll('.epic-body').forEach(body => {
+    // all open by default; clicking the header toggles
+  });
+</script>

@@ -1,0 +1,8 @@
+# Migration runner for the integration harness. Built with the repo root as
+# context so no bind mounts are needed (the CI agent uses Docker-outside-of-
+# Docker, where bind-mounting the workspace yields an empty directory).
+FROM node:20-alpine
+WORKDIR /work
+RUN npm init -y >/dev/null && npm pkg set type=module >/dev/null && npm i pg@8 --silent
+COPY db ./db
+CMD ["node", "db/migrate.js"]

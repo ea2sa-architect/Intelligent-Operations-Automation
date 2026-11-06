@@ -1,0 +1,38 @@
+{
+  "name": "__ioa_governance_project",
+  "version": "1.0.0",
+  "description": "IOA Governance Platform",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "bootstrap-platform": "./bootstrap/bootstrap-platform.js"
+  },
+  "scripts": {
+    "bootstrap": "node bootstrap/bootstrap-platform.js bootstrap",
+    "migrate": "node db/migrate.js",
+    "kong:sync": "deck gateway sync kong/kong.yaml --select-tag ioa-governance --kong-addr ${KONG_ADMIN_URL:-http://localhost:8001}",
+    "test": "node scripts/test-all.js",
+    "test:service": "npm test --prefix services/$SERVICE",
+    "demo:seed": "node scripts/demo-seed.js",
+    "lint": "eslint services"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "dotenv": "^17.4.2",
+    "fs-extra": "^11.3.5",
+    "handlebars": "^4.7.9",
+    "js-yaml": "^4.1.1",
+    "ora": "^9.4.0",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "globals": "^15.15.0",
+    "nodemon": "^3.1.14"
+  }
+}

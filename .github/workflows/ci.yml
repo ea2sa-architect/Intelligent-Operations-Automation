@@ -1,0 +1,39 @@
+name: CI
+
+# S2.3 (work/epics/e2-iso42001-hardening) — first slice: run the existing test
+# suite on every PR and on pushes to main. Does not yet cover the bootstrap
+# drift check, migration check, or lint — those come with the rest of S2.3.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install service dependencies
+        run: |
+          for svc in governance-service ai-inference-service audit-service \
+                     escalation-service telemetry-service workflow-governance-service \
+                     mcp-governance-service auth-service; do
+            echo "::group::npm ci - $svc"
+            npm ci --prefix "services/$svc"
+            echo "::endgroup::"
+          done
+
+      - name: Run test suite (scripts/test-all.js)
+        run: node scripts/test-all.js

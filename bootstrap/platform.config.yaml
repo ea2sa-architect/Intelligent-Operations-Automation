@@ -1,0 +1,257 @@
+namespace: ioa-governance
+# Image repository prefix for k8s manifests. `ioa-governance` = images built
+# locally and `kind load`ed (no pull). To use a real registry, change this and
+# the imageTag, push from CI, and re-run `npm run bootstrap`.
+registry: ioa-governance
+nodeVersion: "20"
+
+database:
+  image: timescale/timescaledb:latest-pg16
+  name: ioa_governance
+  user: ioa
+  # EP-310-S6 — password removed from config; POSTGRES_PASSWORD must be set in .env
+  # (no compose default, so a missing value fails at startup — see compose-generator.js)
+  port: 5439
+
+# AUTH-201/202 — every service verifies JWTs with the auth-service public
+# key; only auth-service itself gets the private key (in its own extraEnv).
+# INTERNAL_SERVICE_KEY is the alternate credential requireAuth accepts for
+# service-to-service calls that carry no browser session (e.g.
+# workflow-governance-service -> telemetry-service).
+# EP-310-S3 — Kong rate-limiting plugin defaults applied to every route.
+# Individual services can override with a rateLimit: block of their own.
+kongDefaults:
+  rateLimit:
+    minute: 100
+    policy: local
+    limitBy: ip
+
+# Kubernetes deployment (kind on Phoenix; see scripts/k8s/). Everything under
+# k8s/ is generated from this block — never edit those files by hand.
+kubernetes:
+  imageTag: "1.0.0"            # pinned, never :latest — bump on release
+  imagePullPolicy: IfNotPresent
+  localConfigMap: ioa-local-config   # environment-specific, non-secret, untracked values (scripts/k8s/local-config.sh)
+  secretName: ioa-secrets      # created out-of-band by scripts/k8s/secrets.sh, never committed
+  # Secret keys a pod may start without (matches compose's "empty if unset").
+  optionalSecrets: [AUTH_GUEST_USERNAME, AUTH_GUEST_PASSWORD, AUTH_ADMIN2_USERNAME, AUTH_ADMIN2_PASSWORD, N8N_API_KEY, N8N_WEBHOOK_SECRET]
+  defaultResources:
+    requests: { cpu: 100m, memory: 192Mi }
+    limits:   { cpu: 500m, memory: 512Mi }
+  database:
+    image: timescale/timescaledb:2.26.4-pg16   # pinned; matches live (TimescaleDB 2.26.4 / PG 16) so dumps restore cleanly
+    storage: 20Gi
+    tune: { memory: 2GB, cpus: "2" }           # passed to timescaledb-tune; avoids cgroup auto-detect (panics on some hosts)
+    requests: { cpu: 250m, memory: 1Gi }
+    limits:   { cpu: "2",  memory: 2Gi }
+  redis:
+    image: redis:7.4-alpine
+  migrate:
+    image: ioa-governance/migrate
+  gateway:
+    image: kong:3.7
+    # Real client IP behind the front proxy (nginx on gilbert): Kong honours X-Forwarded-For only from the
+    # trusted peers, so rate limits (limit_by: ip) apply per real client instead of per proxy. Needs the NodePort
+    # to preserve the source IP (externalTrafficPolicy: Local). The trusted peer CIDRs are deliberately NOT in
+    # this repo: they come from the untracked file ~/ioa-kind/trusted_proxies (or $TRUSTED_PROXIES) via
+    # scripts/k8s/local-config.sh -> ConfigMap `localConfigMap`. If unset, X-Forwarded-For is ignored (safe).
+    realIp: true
+    nodePort: 30080            # kind maps this to host port 18080 (18000 is DataPower) (scripts/k8s/kind-config.yaml)
+  backup:
+    schedule: "0 3 * * *"
+    storage: 10Gi
+    keep: 7
+
+globalEnv:
+  AUTH_JWT_PUBLIC_KEY: ${AUTH_JWT_PUBLIC_KEY}
+  INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
+
+services:
+  - name: governance-service
+    description: Core governance policy enforcement service
+    schema: governance
+    port: 3300
+    replicas: 2
+    # index.js/package.json need export default app + guarded listen() for
+    # tests, plus vitest/supertest devDependencies — see CLAUDE.md's exception note.
+    preserveFiles: [index.js, package.json]
+    extraEnv:
+      # Policy bundle export/import emit audit events (src/lib/audit-client.js)
+      AUDIT_SERVICE_URL: http://audit-service:3302
+    routes:
+      - path: /api/governance
+        stripPath: true
+        methods: [GET, POST, PUT, PATCH, DELETE]
+
+  - name: ai-inference-service
+    description: AI model inference and decision service
+    schema: ai_inference
+    port: 3301
+    replicas: 1
+    resources:
+      memory: 512Mi
+      cpu: 500m
+    # AUTH-205 — index.js/package.json need export default app + guarded
+    # listen() so tests/*.test.js can import the app, plus vitest/supertest
+    # devDependencies the generator template doesn't know about.
+    preserveFiles: [index.js, package.json]
+    # EP-102-S4/S5 — ai-inference-service now reports GenAI-convention
+    # telemetry (model, tokens, cost, latency) into telemetry-service.
+    # EP-201-S12/S13 — governance-client.js calls POST /enforce before
+    # recording an inference request.
+    # E7-S1.3 — escalation-client.js files an incident on budget
+    # breach; found missing via the epic's E2E integration checkpoint
+    # (escalation-client logged "fetch failed" — it was falling back to
+    # its own localhost:3303, which is itself inside this container, not
+    # escalation-service).
+    extraEnv:
+      TELEMETRY_SERVICE_URL: http://telemetry-service:3304
+      GOVERNANCE_SERVICE_URL: http://governance-service:3300
+      ESCALATION_SERVICE_URL: http://escalation-service:3303
+    routes:
+      - path: /api/inference
+        stripPath: true
+        methods: [GET, POST, PUT, PATCH]
+
+  - name: audit-service
+    description: Audit log and compliance tracking service
+    schema: audit
+    port: 3302
+    replicas: 2
+    preserveFiles: [index.js, package.json]
+    routes:
+      - path: /api/audit
+        stripPath: true
+        methods: [GET, POST]
+
+  - name: escalation-service
+    description: Alert escalation and notification service
+    schema: escalation
+    port: 3303
+    replicas: 1
+    preserveFiles: [index.js, package.json]
+    routes:
+      - path: /api/escalation
+        stripPath: true
+        methods: [GET, POST, PUT, PATCH, DELETE]
+
+  - name: telemetry-service
+    description: Metrics collection and observability service
+    schema: telemetry
+    port: 3304
+    replicas: 1
+    # Same reason as workflow/mcp-governance-service: index.js needs a guarded
+    # app.listen + export default app for tests, and package.json carries
+    # vitest/supertest devDependencies the generator template doesn't know about.
+    preserveFiles: [index.js, package.json]
+    routes:
+      - path: /api/telemetry
+        stripPath: true
+        methods: [GET, POST]
+
+  - name: workflow-governance-service
+    description: Workflow discovery, risk scoring, and policy inference engine
+    schema: workflow_governance
+    port: 3305
+    replicas: 1
+    # index.js and package.json are hand-authored (custom route ordering, the
+    # reaper, test tooling) — the generator must not overwrite them. See
+    # CLAUDE.md's "Exception" note for what's hand-authored and why.
+    preserveFiles: [index.js, package.json]
+    extraNetworks:
+      - ea2sa-net
+    extraEnv:
+      REDIS_URL: redis://redis-master:6379
+      N8N_BASE_URL: https://ea2sa.app.n8n.cloud/api/v1
+      N8N_API_KEY: ${N8N_API_KEY}
+      N8N_WEBHOOK_SECRET: ${N8N_WEBHOOK_SECRET}
+      N8N_ANALYSIS_WEBHOOK_URL: https://ea2sa.app.n8n.cloud/webhook/ioa-governance-analysis
+      CALLBACK_BASE_URL: https://ioa.ea2sa.com
+      GOVERNANCE_SERVICE_URL: http://governance-service:3300
+      AUDIT_SERVICE_URL: http://audit-service:3302
+      ESCALATION_SERVICE_URL: http://escalation-service:3303
+      TELEMETRY_SERVICE_URL: http://telemetry-service:3304
+      MCP_GOVERNANCE_SERVICE_URL: http://mcp-governance-service:3306
+    routes:
+      - path: /api/workflow-governance
+        stripPath: true
+        methods: [GET, POST, PUT, PATCH, DELETE]
+
+  - name: mcp-governance-service
+    description: MCP server/tool/resource registry and governance
+    schema: mcp_governance
+    port: 3306
+    replicas: 1
+    # Same reason as workflow-governance-service: index.js needs a guarded
+    # app.listen + export default app for tests, and package.json carries
+    # vitest/supertest devDependencies the generator template doesn't know about.
+    preserveFiles: [index.js, package.json]
+    extraEnv:
+      GOVERNANCE_SERVICE_URL: http://governance-service:3300
+      TELEMETRY_SERVICE_URL: http://telemetry-service:3304
+      # EP-201-S4 — kong-provisioner.js talks to the shared Kong instance's
+      # Admin API directly; kong-net is already joined by every service (see
+      # compose-generator.js), kong-gateway is that container's name on it.
+      KONG_ADMIN_URL: http://kong-gateway:8001
+      # EP-202-S6 — expiry-reminder-reaper.js escalates via escalation-client.js.
+      ESCALATION_SERVICE_URL: http://escalation-service:3303
+    routes:
+      - path: /api/mcp-governance
+        stripPath: true
+        methods: [GET, POST, PUT, PATCH, DELETE]
+
+  - name: auth-service
+    description: Identity, credential verification, and RS256 JWT issuance
+    schema: auth
+    port: 3307
+    replicas: 1
+    # EP-310-S3 — stricter rate limit for auth endpoints (login brute-force mitigation)
+    rateLimit:
+      minute: 10
+      policy: local
+      limitBy: ip
+    # AUTH-101: index.js/package.json hand-authored (guarded app.listen +
+    # export default app for tests, admin-seed startup hook, bcryptjs +
+    # jsonwebtoken deps the generator template doesn't know about).
+    preserveFiles: [index.js, package.json]
+    extraEnv:
+      AUTH_ADMIN_USERNAME: ${AUTH_ADMIN_USERNAME}
+      AUTH_ADMIN_PASSWORD: ${AUTH_ADMIN_PASSWORD}
+      # AUTH-501 — optional read-only account; seeding is skipped if unset
+      # (see seed-admin.js's ensureGuestSeeded).
+      AUTH_GUEST_USERNAME: ${AUTH_GUEST_USERNAME}
+      AUTH_GUEST_PASSWORD: ${AUTH_GUEST_PASSWORD}
+      # Second, independent admin account for break-glass/special-case
+      # access — optional, seeding skipped if unset (ensureSecondaryAdminSeeded).
+      AUTH_ADMIN2_USERNAME: ${AUTH_ADMIN2_USERNAME}
+      AUTH_ADMIN2_PASSWORD: ${AUTH_ADMIN2_PASSWORD}
+      AUTH_JWT_PRIVATE_KEY: ${AUTH_JWT_PRIVATE_KEY}
+      AUTH_JWT_PUBLIC_KEY: ${AUTH_JWT_PUBLIC_KEY}
+      # EP-310-S5 — audit-client.js emits auth events to audit-service
+      AUDIT_SERVICE_URL: http://audit-service:3302
+    routes:
+      - path: /api/auth
+        stripPath: true
+        methods: [GET, POST, PUT, PATCH, DELETE]
+
+  - name: api-docs
+    description: Unified Swagger UI hub aggregating OpenAPI docs for every platform service
+    # No DB — a static Swagger UI aggregator (browser fetches each service's
+    # own /openapi.json directly through Kong). schema is nominal; migrate.js
+    # warns and skips cleanly when a schema has no migrations directory.
+    schema: api_docs
+    port: 3399
+    replicas: 1
+    # Hand-authored (swagger-ui-express hub, not a generated Express stub) —
+    # was previously run as an unmanaged standalone container, which is how
+    # it ended up looking like docker-compose orphan cruft and got removed
+    # by mistake; this entry makes it a properly managed service instead.
+    preserveFiles: [index.js, package.json, Dockerfile, db.js]
+    routes:
+      # stripPath: false — index.js itself serves paths already prefixed
+      # with /api/api-docs (app.use('/api/api-docs', ...)); stripping the
+      # prefix here would break it, and must match the route already live
+      # in the shared Kong instance (verified via its Admin API).
+      - path: /api/api-docs
+        stripPath: false
+        methods: [GET]

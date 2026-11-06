@@ -1,0 +1,2226 @@
+{
+  "components": [
+    {
+      "id": "comp-bootstrap-generators-service-generator-js",
+      "content": "Generates per-service Dockerfile/package.json/index.js/db.js from templates",
+      "source_file": "bootstrap/generators/service-generator.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "bootstrap",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-bootstrap-generators-k8s-generator-js",
+      "content": "Generates k8s/ manifests from platform.config.yaml",
+      "source_file": "bootstrap/generators/k8s-generator.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "bootstrap",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-bootstrap-generators-compose-generator-js",
+      "content": "Generates docker-compose.yml from platform.config.yaml",
+      "source_file": "bootstrap/generators/compose-generator.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "bootstrap",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-bootstrap-generators-kong-generator-js",
+      "content": "Generates kong/kong.yaml from platform.config.yaml",
+      "source_file": "bootstrap/generators/kong-generator.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "bootstrap",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-workflows-swift-summit-d7b97b96a9d5-e-mail-report-publisher-workflow-ts",
+      "content": "n8n-as-code workflow definition (exported from n8n Cloud)",
+      "source_file": "workflows/swift-summit-d7b97b96a9d5/E-Mail Report Publisher.workflow.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-workflows-ea2sa-cloud-report-publisher-e-mail-workflow-ts",
+      "content": "n8n-as-code workflow definition (exported from n8n Cloud)",
+      "source_file": "workflows/ea2sa-cloud/Report Publisher E-Mail.workflow.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-workflows-ea2sa-cloud-professional-services-workflow-v2-1-drive-report-delivery-workflow-ts",
+      "content": "n8n-as-code workflow definition (exported from n8n Cloud)",
+      "source_file": "workflows/ea2sa-cloud/Professional services workflow v2_1 - Drive Report Delivery.workflow.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-workflows-candid-zinc-5f1cb5f89fee-g-drive-flow-workflow-ts",
+      "content": "n8n-as-code workflow definition (exported from n8n Cloud)",
+      "source_file": "workflows/candid-zinc-5f1cb5f89fee/G-Drive-Flow.workflow.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-scripts-demo-seed-js",
+      "content": "Seeds demo data via HTTP calls through the running services",
+      "source_file": "scripts/demo-seed.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "scripts",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-db-seed-demo-js",
+      "content": "Seeds demo data directly into Postgres for local development",
+      "source_file": "db/seed-demo.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "db",
+        "symbol_count": 21
+      }
+    },
+    {
+      "id": "comp-db-migrate-js",
+      "content": "Idempotent DB migration runner (tracks state in public.migrations)",
+      "source_file": "db/migrate.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "db",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-bootstrap-tests-preserve-files-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "bootstrap/tests/preserve-files.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "bootstrap",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/mcp-governance-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/workflow-governance-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-escalation-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/escalation-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-auth-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/auth-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-audit-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/audit-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-governance-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/governance-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-telemetry-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/telemetry-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-ai-inference-service-swagger-js",
+      "content": "Swagger/OpenAPI spec definition for this service",
+      "source_file": "services/ai-inference-service/swagger.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-tests-mcp-risk-scorer-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/mcp-governance-service/tests/mcp-risk-scorer.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/mcp-governance-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-tests-correlation-id-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/mcp-governance-service/tests/correlation-id.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-mcp-risk-scorer-js",
+      "content": "Computes workflow/node risk scores",
+      "source_file": "services/mcp-governance-service/src/lib/mcp-risk-scorer.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 12
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-assurance-reaper-js",
+      "content": "Background reaper: orphan/expired job recovery on startup + interval sweep",
+      "source_file": "services/mcp-governance-service/src/lib/assurance-reaper.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-redaction-config-js",
+      "content": "MCP server registry: risk scoring, Kong provisioning, credential scanning, prompt registry",
+      "source_file": "services/mcp-governance-service/src/lib/redaction-config.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-credential-scanner-js",
+      "content": "Scans MCP server configs for exposed credentials",
+      "source_file": "services/mcp-governance-service/src/lib/credential-scanner.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-expiry-reminder-reaper-js",
+      "content": "Background reaper: orphan/expired job recovery on startup + interval sweep",
+      "source_file": "services/mcp-governance-service/src/lib/expiry-reminder-reaper.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-governance-client-js",
+      "content": "Client for querying governance-service (policy/rule evaluation)",
+      "source_file": "services/mcp-governance-service/src/lib/governance-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-telemetry-client-js",
+      "content": "Client for emitting telemetry events to telemetry-service",
+      "source_file": "services/mcp-governance-service/src/lib/telemetry-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-escalation-client-js",
+      "content": "Client for filing incidents with escalation-service",
+      "source_file": "services/mcp-governance-service/src/lib/escalation-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-kong-provisioner-js",
+      "content": "Live Kong Admin API calls to provision service+route+plugin per approved MCP server",
+      "source_file": "services/mcp-governance-service/src/lib/kong-provisioner.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 8
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-approval-expiration-reaper-js",
+      "content": "Background reaper: orphan/expired job recovery on startup + interval sweep",
+      "source_file": "services/mcp-governance-service/src/lib/approval-expiration-reaper.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/mcp-governance-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-lib-correlation-id-js",
+      "content": "Request correlation-ID propagation helper",
+      "source_file": "services/mcp-governance-service/src/lib/correlation-id.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-routes-redaction-patterns-js",
+      "content": "Express route handlers",
+      "source_file": "services/mcp-governance-service/src/routes/redaction-patterns.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-routes-tools-js",
+      "content": "Express route handlers",
+      "source_file": "services/mcp-governance-service/src/routes/tools.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-routes-prompt-registry-js",
+      "content": "Express route handlers",
+      "source_file": "services/mcp-governance-service/src/routes/prompt-registry.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-routes-servers-js",
+      "content": "Express route handlers",
+      "source_file": "services/mcp-governance-service/src/routes/servers.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-routes-resources-js",
+      "content": "Express route handlers",
+      "source_file": "services/mcp-governance-service/src/routes/resources.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-mcp-governance-service-src-routes-prompts-js",
+      "content": "Express route handlers",
+      "source_file": "services/mcp-governance-service/src/routes/prompts.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-tests-analysis-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/workflow-governance-service/tests/analysis.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-tests-mcp-trust-ceiling-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/workflow-governance-service/tests/mcp-trust-ceiling.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/workflow-governance-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-tests-risk-scorer-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/workflow-governance-service/tests/risk-scorer.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-tests-correlation-id-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/workflow-governance-service/tests/correlation-id.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-risk-history-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/risk-history.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-enforcement-client-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/enforcement-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-mcp-trust-ceiling-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/mcp-trust-ceiling.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-attack-path-builder-js",
+      "content": "Builds attack-path/blast-radius reachability graph",
+      "source_file": "services/workflow-governance-service/src/lib/attack-path-builder.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-lineage-builder-js",
+      "content": "Builds workflow data-lineage graph",
+      "source_file": "services/workflow-governance-service/src/lib/lineage-builder.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 8
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-tag-attributes-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/tag-attributes.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-camunda-extractor-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/camunda-extractor.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-mcp-governance-client-js",
+      "content": "Client for querying governance-service (policy/rule evaluation)",
+      "source_file": "services/workflow-governance-service/src/lib/mcp-governance-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-verify-n8n-signature-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/verify-n8n-signature.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-baseline-engine-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/baseline-engine.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-zapier-extractor-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/zapier-extractor.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-n8n-client-js",
+      "content": "n8n Cloud REST API wrapper (workflows, projects)",
+      "source_file": "services/workflow-governance-service/src/lib/n8n-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-bpmn-parser-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/bpmn-parser.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-risk-scorer-js",
+      "content": "Computes workflow/node risk scores",
+      "source_file": "services/workflow-governance-service/src/lib/risk-scorer.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 21
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-make-extractor-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/make-extractor.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 10
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-telemetry-client-js",
+      "content": "Client for emitting telemetry events to telemetry-service",
+      "source_file": "services/workflow-governance-service/src/lib/telemetry-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-policy-inference-js",
+      "content": "Infers applicable governance policies for a workflow",
+      "source_file": "services/workflow-governance-service/src/lib/policy-inference.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 12
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-reaper-js",
+      "content": "Background reaper: orphan/expired job recovery on startup + interval sweep",
+      "source_file": "services/workflow-governance-service/src/lib/reaper.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-cache-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/cache.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-metadata-extractor-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/metadata-extractor.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 13
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-trust-index-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/trust-index.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/workflow-governance-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-governance-posture-client-js",
+      "content": "n8n/Make/Zapier/Camunda/Power-Automate workflow import, risk scoring, PII detection, AI analysis, tags, lineage, attack-path reachability",
+      "source_file": "services/workflow-governance-service/src/lib/governance-posture-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-correlation-id-js",
+      "content": "Request correlation-ID propagation helper",
+      "source_file": "services/workflow-governance-service/src/lib/correlation-id.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-routes-workflows-js",
+      "content": "Express route handlers",
+      "source_file": "services/workflow-governance-service/src/routes/workflows.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-adapters-power-automate-js",
+      "content": "Per-platform workflow adapter (import/normalize into workflow_governance schema)",
+      "source_file": "services/workflow-governance-service/src/lib/adapters/power-automate.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-adapters-index-js",
+      "content": "Per-platform workflow adapter (import/normalize into workflow_governance schema)",
+      "source_file": "services/workflow-governance-service/src/lib/adapters/index.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-adapters-camunda-js",
+      "content": "Per-platform workflow adapter (import/normalize into workflow_governance schema)",
+      "source_file": "services/workflow-governance-service/src/lib/adapters/camunda.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 12
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-adapters-make-js",
+      "content": "Per-platform workflow adapter (import/normalize into workflow_governance schema)",
+      "source_file": "services/workflow-governance-service/src/lib/adapters/make.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-adapters-n8n-js",
+      "content": "Per-platform workflow adapter (import/normalize into workflow_governance schema)",
+      "source_file": "services/workflow-governance-service/src/lib/adapters/n8n.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-adapters-zapier-js",
+      "content": "Per-platform workflow adapter (import/normalize into workflow_governance schema)",
+      "source_file": "services/workflow-governance-service/src/lib/adapters/zapier.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-collectors-kong-js",
+      "content": "Runtime data collector feeding risk/lineage analysis",
+      "source_file": "services/workflow-governance-service/src/lib/collectors/kong.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-collectors-postgres-js",
+      "content": "Runtime data collector feeding risk/lineage analysis",
+      "source_file": "services/workflow-governance-service/src/lib/collectors/postgres.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-collectors-n8n-js",
+      "content": "Runtime data collector feeding risk/lineage analysis",
+      "source_file": "services/workflow-governance-service/src/lib/collectors/n8n.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-workflow-governance-service-src-lib-collectors-runner-js",
+      "content": "Runtime data collector feeding risk/lineage analysis",
+      "source_file": "services/workflow-governance-service/src/lib/collectors/runner.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-services-escalation-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/escalation-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-escalation-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/escalation-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-auth-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/auth-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-auth-service-tests-auth-routes-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/auth-service/tests/auth-routes.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-lib-seed-admin-js",
+      "content": "Idempotent admin/guest account seeding on service startup",
+      "source_file": "services/auth-service/src/lib/seed-admin.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-lib-api-keys-js",
+      "content": "API key issuance/validation (POST /api/auth/api-keys)",
+      "source_file": "services/auth-service/src/lib/api-keys.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-lib-audit-client-js",
+      "content": "Client for writing compliance events to audit-service",
+      "source_file": "services/auth-service/src/lib/audit-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-lib-rbac-js",
+      "content": "Role/permission resolution for RBAC (Epic 5, AUTH-501/504)",
+      "source_file": "services/auth-service/src/lib/rbac.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-lib-permissions-js",
+      "content": "Permission-claim helpers for the coarse read/write model",
+      "source_file": "services/auth-service/src/lib/permissions.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-lib-jwt-js",
+      "content": "JWT sign/verify helpers",
+      "source_file": "services/auth-service/src/lib/jwt.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/auth-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-routes-agents-js",
+      "content": "Express route handlers",
+      "source_file": "services/auth-service/src/routes/agents.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-auth-service-src-routes-auth-js",
+      "content": "Express route handlers",
+      "source_file": "services/auth-service/src/routes/auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-audit-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/audit-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-audit-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/audit-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-governance-service-tests-rule-evaluator-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/governance-service/tests/rule-evaluator.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-services-governance-service-tests-approval-chain-engine-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/governance-service/tests/approval-chain-engine.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-governance-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/governance-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-lib-containment-client-js",
+      "content": "Client for triggering containment actions",
+      "source_file": "services/governance-service/src/lib/containment-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-lib-approval-chain-engine-js",
+      "content": "Multi-step approval chain state machine",
+      "source_file": "services/governance-service/src/lib/approval-chain-engine.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-lib-rule-evaluator-js",
+      "content": "Evaluates governance rule conditions against inputs",
+      "source_file": "services/governance-service/src/lib/rule-evaluator.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 21
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-lib-control-test-runner-js",
+      "content": "Executes control tests against governance policies",
+      "source_file": "services/governance-service/src/lib/control-test-runner.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 10
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-lib-waiver-reaper-js",
+      "content": "Background reaper: orphan/expired job recovery on startup + interval sweep",
+      "source_file": "services/governance-service/src/lib/waiver-reaper.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-lib-agent-violation-recorder-js",
+      "content": "Policy definitions, rules, bindings, version history; approval chains, control tests, containment, waivers",
+      "source_file": "services/governance-service/src/lib/agent-violation-recorder.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/governance-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-routes-violations-js",
+      "content": "Express route handlers",
+      "source_file": "services/governance-service/src/routes/violations.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-routes-release-decisions-js",
+      "content": "Express route handlers",
+      "source_file": "services/governance-service/src/routes/release-decisions.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-routes-containment-js",
+      "content": "Express route handlers",
+      "source_file": "services/governance-service/src/routes/containment.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-governance-service-src-routes-approval-chains-js",
+      "content": "Express route handlers",
+      "source_file": "services/governance-service/src/routes/approval-chains.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-telemetry-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/telemetry-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-telemetry-service-tests-correlation-id-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/telemetry-service/tests/correlation-id.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-telemetry-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/telemetry-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-telemetry-service-src-lib-correlation-id-js",
+      "content": "Request correlation-ID propagation helper",
+      "source_file": "services/telemetry-service/src/lib/correlation-id.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-telemetry-service-src-routes-metrics-js",
+      "content": "Express route handlers",
+      "source_file": "services/telemetry-service/src/routes/metrics.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "route",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-ai-inference-service-tests-require-auth-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/ai-inference-service/tests/require-auth.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-ai-inference-service-tests-correlation-id-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "services/ai-inference-service/tests/correlation-id.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-ai-inference-service-src-lib-governance-client-js",
+      "content": "Client for querying governance-service (policy/rule evaluation)",
+      "source_file": "services/ai-inference-service/src/lib/governance-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-services-ai-inference-service-src-lib-telemetry-client-js",
+      "content": "Client for emitting telemetry events to telemetry-service",
+      "source_file": "services/ai-inference-service/src/lib/telemetry-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-services-ai-inference-service-src-lib-require-auth-js",
+      "content": "Deliberately duplicated JWT-verification middleware (Epic 2, AUTH-201), applied globally via app.use(requireAuth)",
+      "source_file": "services/ai-inference-service/src/lib/require-auth.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-services-ai-inference-service-src-lib-correlation-id-js",
+      "content": "Request correlation-ID propagation helper",
+      "source_file": "services/ai-inference-service/src/lib/correlation-id.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "services",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-tests-docker-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/discovery-agent/tests/docker.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-tests-scan-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/discovery-agent/tests/scan.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-bin-discovery-agent-js",
+      "content": "discovery-agent CLI entry point",
+      "source_file": "packages/discovery-agent/bin/discovery-agent.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-api-client-js",
+      "content": "HTTP client for the IOA governance API",
+      "source_file": "packages/discovery-agent/src/api-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-scan-js",
+      "content": "Orchestrates the local MCP-config discovery scan",
+      "source_file": "packages/discovery-agent/src/scan.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-duration-js",
+      "content": "Duration parsing/formatting utility",
+      "source_file": "packages/discovery-agent/src/duration.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-parsers-cline-js",
+      "content": "Parses this client's MCP server config format",
+      "source_file": "packages/discovery-agent/src/parsers/cline.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-parsers-cursor-js",
+      "content": "Parses this client's MCP server config format",
+      "source_file": "packages/discovery-agent/src/parsers/cursor.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-parsers-vscode-js",
+      "content": "Parses this client's MCP server config format",
+      "source_file": "packages/discovery-agent/src/parsers/vscode.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-parsers-windsurf-js",
+      "content": "Parses this client's MCP server config format",
+      "source_file": "packages/discovery-agent/src/parsers/windsurf.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-parsers-claude-desktop-js",
+      "content": "Parses this client's MCP server config format",
+      "source_file": "packages/discovery-agent/src/parsers/claude-desktop.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-parsers-docker-js",
+      "content": "Parses this client's MCP server config format",
+      "source_file": "packages/discovery-agent/src/parsers/docker.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-packages-discovery-agent-src-lib-parse-mcp-servers-js",
+      "content": "Normalizes parsed MCP server entries across client formats",
+      "source_file": "packages/discovery-agent/src/lib/parse-mcp-servers.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "packages",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-tests-run-assess-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/ioa-cli/tests/run-assess.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-tests-run-check-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/ioa-cli/tests/run-check.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-tests-execute-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/ioa-cli/tests/execute.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-tests-run-qa-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/ioa-cli/tests/run-qa.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-tests-run-verify-release-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/ioa-cli/tests/run-verify-release.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-tests-build-policy-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/ioa-cli/tests/build-policy.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-tests-run-threat-model-test-js",
+      "content": "Test suite (vitest/supertest)",
+      "source_file": "packages/ioa-cli/tests/run-threat-model.test.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-bin-ioa-js",
+      "content": "ioa CLI entry point (commander)",
+      "source_file": "packages/ioa-cli/bin/ioa.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-api-client-js",
+      "content": "HTTP client for the IOA governance API",
+      "source_file": "packages/ioa-cli/src/api-client.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-format-threat-model-js",
+      "content": "Formats CLI threat-model report output",
+      "source_file": "packages/ioa-cli/src/format/threat-model.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-format-report-js",
+      "content": "Formats CLI human-readable report output",
+      "source_file": "packages/ioa-cli/src/format/report.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-execute-js",
+      "content": "Executes approved test-execution-profile scenarios against a workflow's webhook",
+      "source_file": "packages/ioa-cli/src/pipeline/execute.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-run-qa-js",
+      "content": "Orchestrates the `ioa qa` full pipeline incl. controlled execution testing",
+      "source_file": "packages/ioa-cli/src/pipeline/run-qa.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-run-verify-release-js",
+      "content": "Orchestrates `ioa verify-release` certification",
+      "source_file": "packages/ioa-cli/src/pipeline/run-verify-release.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-run-assess-js",
+      "content": "Orchestrates the `ioa assess` read-only governance snapshot",
+      "source_file": "packages/ioa-cli/src/pipeline/run-assess.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-anomaly-state-js",
+      "content": "Tracks behavioral-anomaly state across qa runs",
+      "source_file": "packages/ioa-cli/src/pipeline/anomaly-state.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-coverage-js",
+      "content": "Computes policy-coverage percentage for a workflow",
+      "source_file": "packages/ioa-cli/src/pipeline/coverage.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-exposure-summary-js",
+      "content": "Summarizes data/attack-surface exposure for a workflow",
+      "source_file": "packages/ioa-cli/src/pipeline/exposure-summary.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-run-check-js",
+      "content": "Orchestrates the `ioa policy-check` command",
+      "source_file": "packages/ioa-cli/src/pipeline/run-check.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-pipeline-run-threat-model-js",
+      "content": "Orchestrates the `ioa threat-model` blast-radius report",
+      "source_file": "packages/ioa-cli/src/pipeline/run-threat-model.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-build-mode-build-policy-js",
+      "content": "Interactive governance-policy scaffolding from the rule-type catalog",
+      "source_file": "packages/ioa-cli/src/build-mode/build-policy.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-packages-ioa-cli-src-discover-n8n-workflow-js",
+      "content": "Resolves a target workflow by IOA id / n8n_id / name",
+      "source_file": "packages/ioa-cli/src/discover/n8n-workflow.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "packages",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-app-jsx",
+      "content": "React Router route table; /admin/* nested under AdminLayout",
+      "source_file": "web/src/App.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-changepasswordmodal-jsx",
+      "content": "Modal for self-service password change",
+      "source_file": "web/src/components/ChangePasswordModal.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-layout-jsx",
+      "content": "Sidebar nav incl. collapsible Administration section",
+      "source_file": "web/src/components/Layout.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-web-src-components-adminlayout-jsx",
+      "content": "Admin section header + horizontal sub-nav + Outlet",
+      "source_file": "web/src/components/AdminLayout.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-authguard-jsx",
+      "content": "Route guard: redirects unauthenticated users, gates on permissions",
+      "source_file": "web/src/components/AuthGuard.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 8
+      }
+    },
+    {
+      "id": "comp-web-src-hooks-useconfirm-jsx",
+      "content": "Promise-based confirm-dialog hook",
+      "source_file": "web/src/hooks/useConfirm.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-hooks-usetags-js",
+      "content": "Shared TanStack Query hook for the tag registry, deduplicates fetches",
+      "source_file": "web/src/hooks/useTags.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-pages-login-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Login.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-web-src-pages-escalation-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Escalation.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-web-src-pages-telemetry-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Telemetry.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-web-src-pages-governance-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Governance.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 28
+      }
+    },
+    {
+      "id": "comp-web-src-pages-lineage-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Lineage.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-web-src-pages-audit-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Audit.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-web-src-pages-dashboard-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Dashboard.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-web-src-pages-anomalydetection-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/AnomalyDetection.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-web-src-pages-roiintelligence-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/RoiIntelligence.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 10
+      }
+    },
+    {
+      "id": "comp-web-src-pages-workflowgovernance-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/WorkflowGovernance.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 18
+      }
+    },
+    {
+      "id": "comp-web-src-pages-aiinference-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/AiInference.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 14
+      }
+    },
+    {
+      "id": "comp-web-src-pages-assurance-jsx",
+      "content": "Top-level SPA page",
+      "source_file": "web/src/pages/Assurance.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-web-src-lib-helpcontent-js",
+      "content": "InfoTip copy keyed by page/field",
+      "source_file": "web/src/lib/helpContent.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-lib-utils-js",
+      "content": "Shared SPA utility functions",
+      "source_file": "web/src/lib/utils.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-lib-api-js",
+      "content": "All SPA API clients (governance, inference, audit, escalation, telemetry, tags, workflowGovernance, auth)",
+      "source_file": "web/src/lib/api.js",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "utility",
+        "layer": "web",
+        "symbol_count": 22
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-passwordinput-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/PasswordInput.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-table-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/Table.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-card-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/Card.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-infotip-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/InfoTip.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-button-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/Button.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-badge-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/Badge.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-input-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/Input.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-modal-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/Modal.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-components-ui-confirmdialog-jsx",
+      "content": "Reusable UI primitive",
+      "source_file": "web/src/components/ui/ConfirmDialog.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "component",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-tagadmin-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/TagAdmin.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-usermanagement-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/UserManagement.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 4
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-controltests-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/ControlTests.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-waiveradmin-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/WaiverAdmin.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 2
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-integrations-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/Integrations.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 7
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-approvalchains-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/ApprovalChains.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-promptregistry-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/PromptRegistry.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 6
+      }
+    },
+    {
+      "id": "comp-web-src-pages-admin-apidocs-jsx",
+      "content": "Administration sub-page",
+      "source_file": "web/src/pages/admin/ApiDocs.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "web",
+        "symbol_count": 1
+      }
+    },
+    {
+      "id": "comp-web-src-pages-governance-mcpregistry-jsx",
+      "content": "Governance sub-page",
+      "source_file": "web/src/pages/governance/McpRegistry.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "parser",
+        "layer": "web",
+        "symbol_count": 11
+      }
+    },
+    {
+      "id": "comp-web-src-pages-governance-enforcement-jsx",
+      "content": "Governance sub-page",
+      "source_file": "web/src/pages/governance/Enforcement.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "parser",
+        "layer": "web",
+        "symbol_count": 3
+      }
+    },
+    {
+      "id": "comp-web-src-pages-governance-violations-jsx",
+      "content": "Governance sub-page",
+      "source_file": "web/src/pages/governance/Violations.jsx",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "parser",
+        "layer": "web",
+        "symbol_count": 5
+      }
+    },
+    {
+      "id": "comp-workflows-swift-summit-d7b97b96a9d5-n8n-workflows-d-ts",
+      "content": "n8n-as-code generated TypeScript type definitions for this n8n project",
+      "source_file": "workflows/swift-summit-d7b97b96a9d5/n8n-workflows.d.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 9
+      }
+    },
+    {
+      "id": "comp-workflows-neat-horizon-f37500a0187b-n8n-workflows-d-ts",
+      "content": "n8n-as-code generated TypeScript type definitions for this n8n project",
+      "source_file": "workflows/neat-horizon-f37500a0187b/n8n-workflows.d.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 9
+      }
+    },
+    {
+      "id": "comp-workflows-ea2sa-cloud-n8n-workflows-d-ts",
+      "content": "n8n-as-code generated TypeScript type definitions for this n8n project",
+      "source_file": "workflows/ea2sa-cloud/n8n-workflows.d.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 9
+      }
+    },
+    {
+      "id": "comp-workflows-candid-zinc-5f1cb5f89fee-n8n-workflows-d-ts",
+      "content": "n8n-as-code generated TypeScript type definitions for this n8n project",
+      "source_file": "workflows/candid-zinc-5f1cb5f89fee/n8n-workflows.d.ts",
+      "created": "2026-08-01T20:48:57.841875+00:00",
+      "metadata": {
+        "category": "other",
+        "layer": "workflows",
+        "symbol_count": 9
+      }
+    }
+  ]
+}

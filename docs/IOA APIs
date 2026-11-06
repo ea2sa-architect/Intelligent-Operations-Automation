@@ -1,0 +1,97 @@
+Here's the full picture of what the platform exposes — all reachable from n8n via POST http://phoenix:8000/api/... HTTP Request nodes.
+
+Base URL
+All requests go through Kong: http://phoenix:8000/api
+
+What n8n can call
+1. Workflow Governance (/api/workflow-governance)
+The richest surface — purpose-built for n8n workflows.
+
+Endpoint	Method	What it does
+/workflows	GET	List all governed workflows (filter by project, tag)
+/workflows/:id/score	POST	Compute risk score for a workflow
+/workflows/:id/policies/apply	POST	Bind active policies to a workflow
+/workflows/:id/applied-policies	GET	See which policies are currently applied
+/workflows/:id/analyze	POST	Trigger async AI governance analysis → returns job_id
+/workflows/analysis/:job_id	GET	Poll analysis status (pending / completed / failed)
+/workflows/analyze/callback/:job_id	POST	n8n calls this to deliver AI analysis results
+/workflows/:id/analyses	GET	Full analysis history for a workflow
+/workflows/discover	POST	Pull workflow list from a connected platform
+/workflows/import	POST	Import a specific workflow from a platform
+/risk/summary	GET	Aggregate risk scores across all workflows
+/risk/pii/:pii_type	GET	Which workflows expose a given PII type
+/risk/nodes	GET	Node-level risk aggregates
+/tags	GET/POST/PUT/DELETE	Tag registry CRUD
+/platforms	GET/POST/PUT/DELETE	Platform connection registry (n8n, Make, Zapier, Camunda)
+/platforms/:id/test	POST	Test live connectivity to a registered platform
+Key automation pattern: n8n is both the consumer and producer here. The platform calls n8n to run AI analysis, and n8n calls the callback endpoint to return results.
+
+2. Policy Engine (/api/governance)
+Endpoint	Method	What it does
+/policies	GET	List policies (filter by status, workflow_id)
+/policies/:id	GET	Policy detail with rules, bindings, violation counts
+/policies	POST	Create a policy
+/policies/:id/status	PATCH	Activate or deactivate
+/policies/:id/rules	POST/DELETE	Add or remove rules
+/policies/:id/bindings	GET/POST/DELETE	Bind/unbind policy to targets
+/violations	GET	List violations (filter by workflow_id, policy_id, status, severity)
+/violations/evaluate	POST	Run policy evaluation against workflow_id → creates violations
+/violations/summary	GET	Violation counts grouped by workflow
+/violations/:id/status	PATCH	Acknowledge / resolve / close a violation
+/rule-schemas	GET	List all available rule types
+/rule-schemas/:type	GET	JSON schema for a specific rule type
+3. Escalation (/api/escalation)
+Endpoint	Method	What it does
+/incidents	GET	List incidents (filter by status, severity)
+/incidents	POST	Trigger an incident (title, severity, context_json)
+/incidents/:id	GET	Incident detail with notification log
+/incidents/:id/status	PATCH	Transition state: open → acknowledged → resolved → closed
+/incidents/:id/log	POST	Append a notification log entry
+/rules	GET/POST/PUT/DELETE	Escalation rule CRUD
+4. Audit Log (/api/audit)
+Endpoint	Method	What it does
+/events	POST	Append a compliance event (append-only)
+/events	GET	Query audit events (range-scoped, partitioned by month)
+/events/summary	GET	Aggregate counts
+5. AI Inference (/api/inference)
+Endpoint	Method	What it does
+/models	GET/POST/PUT/DELETE	Model registry CRUD
+/inference	GET/POST	List or submit inference requests
+/inference/:id	GET	Request detail with decisions
+/inference/:id/decisions	POST	Record a governance decision against a request
+/inference/decisions	GET	Cross-request decision list (filter by policy_id, outcome)
+/inference/:id/status	PATCH	Update request status
+6. Telemetry (/api/telemetry)
+Endpoint	Method	What it does
+/metrics	POST	Ingest a metric data point
+/metrics	GET	Query metrics (time-range scoped, TimescaleDB backed)
+High-value n8n workflow patterns
+Governance enforcement pipeline
+
+
+Schedule/Webhook → GET /workflow-governance/workflows
+→ POST /workflow-governance/workflows/:id/score
+→ [if score > threshold] POST /governance/violations/evaluate
+→ [if violations] POST /escalation/incidents
+→ POST /audit/events
+Scheduled compliance sweep
+
+
+Cron → GET /governance/violations?status=open&severity=critical
+→ [for each] PATCH /governance/violations/:id/status (acknowledge)
+→ POST /escalation/incidents (if new critical ones)
+→ Slack/email notification
+New workflow auto-govern on import
+
+
+Webhook (n8n workflow published) → POST /workflow-governance/workflows/import
+→ POST /workflow-governance/workflows/:id/score
+→ POST /workflow-governance/workflows/:id/policies/apply
+→ POST /workflow-governance/workflows/:id/analyze  (triggers AI analysis back to n8n)
+Incident response automation
+
+
+Webhook on POST /escalation/incidents
+→ route by severity (IF node)
+→ critical: page on-call + POST /audit/events
+→ high: Slack + PATCH /incidents/:id/status = acknowledged

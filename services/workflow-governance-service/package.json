@@ -1,0 +1,30 @@
+{
+  "name": "workflow-governance-service",
+  "version": "1.0.0",
+  "description": "Workflow discovery, risk scoring, and policy inference engine",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "helmet": "^7.2.0",
+    "pg": "^8.13.3",
+    "redis": "^4.7.0",
+    "swagger-ui-express": "^5.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "cookie-parser": "^1.4.7",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.0",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.0"
+  }
+}

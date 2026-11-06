@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IOA Enterprise Deployment — Implementation Plan</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1f2e;
+    --ink-2: #3d4663;
+    --ink-3: #6b7499;
+    --surface: #f8f9fc;
+    --panel: #eef1f7;
+    --panel-2: #e3e8f4;
+    --accent: #2563eb;
+    --accent-2: #7c3aed;
+    --border: #d1d9e6;
+    --sidebar-bg: #111827;
+    --sidebar-text: #c9d3e8;
+    --sidebar-active: #3b82f6;
+    --sidebar-section: #6b7499;
+
+    --c-discovery: #f59e0b;
+    --c-auth:      #10b981;
+    --c-rbac:      #3b82f6;
+    --c-deploy:    #6366f1;
+    --c-security:  #ef4444;
+    --c-tenancy:   #8b5cf6;
+
+    --effort-xs:  #d1fae5; --effort-xs-t: #065f46;
+    --effort-s:   #dbeafe; --effort-s-t:  #1e40af;
+    --effort-m:   #fef3c7; --effort-m-t:  #92400e;
+    --effort-l:   #fee2e2; --effort-l-t:  #991b1b;
+    --done: #059669; --done-t: #ffffff; --partial: #B45309; --partial-t: #ffffff;
+
+    --sidebar-w: 240px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #e2e8f8; --ink-2: #a8b4d4; --ink-3: #6b7aa0;
+      --surface: #0f1117; --panel: #1a2035; --panel-2: #232d47;
+      --border: #2d3a56;
+      --sidebar-bg: #080c14;
+      --effort-xs:  #064e3b; --effort-xs-t: #6ee7b7;
+      --effort-s:   #1e3a5f; --effort-s-t:  #93c5fd;
+      --effort-m:   #451a03; --effort-m-t:  #fcd34d;
+      --effort-l:   #450a0a; --effort-l-t:  #fca5a5;
+      --done: #10b981; --done-t: #052e1f; --partial: #FCD34D; --partial-t: #451a03;
+    }
+  }
+  :root[data-theme="light"] {
+    --ink: #1a1f2e; --ink-2: #3d4663; --ink-3: #6b7499;
+    --surface: #f8f9fc; --panel: #eef1f7; --panel-2: #e3e8f4;
+    --border: #d1d9e6;
+    --sidebar-bg: #111827;
+    --effort-xs: #d1fae5; --effort-xs-t: #065f46;
+    --effort-s: #dbeafe; --effort-s-t: #1e40af;
+    --effort-m: #fef3c7; --effort-m-t: #92400e;
+    --effort-l: #fee2e2; --effort-l-t: #991b1b;
+    --done: #059669; --done-t: #ffffff; --partial: #B45309; --partial-t: #ffffff;
+  }
+  :root[data-theme="dark"] {
+    --ink: #e2e8f8; --ink-2: #a8b4d4; --ink-3: #6b7aa0;
+    --surface: #0f1117; --panel: #1a2035; --panel-2: #232d47;
+    --border: #2d3a56; --sidebar-bg: #080c14;
+    --effort-xs: #064e3b; --effort-xs-t: #6ee7b7;
+    --effort-s: #1e3a5f; --effort-s-t: #93c5fd;
+    --effort-m: #451a03; --effort-m-t: #fcd34d;
+    --effort-l: #450a0a; --effort-l-t: #fca5a5;
+    --done: #10b981; --done-t: #052e1f; --partial: #FCD34D; --partial-t: #451a03;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    overflow-y: auto;
+    z-index: 50;
+    padding: 0 0 40px;
+  }
+  .sidebar-header {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid #1e2a42;
+  }
+  .sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #4a5a80;
+  }
+  .sidebar-subtitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: #c9d3e8;
+    margin-top: 4px;
+  }
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--sidebar-section);
+    padding: 18px 18px 6px;
+  }
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 18px;
+    text-decoration: none;
+    color: var(--sidebar-text);
+    font-size: 13px;
+    transition: background .12s, color .12s;
+    border-left: 3px solid transparent;
+  }
+  .sidebar-link:hover { background: #1a2742; color: #e8eef8; }
+  .sidebar-link.active { background: #162036; border-left-color: var(--sidebar-active); color: #93c5fd; }
+  .sidebar-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sidebar-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: var(--mono);
+    background: #1e2a42;
+    color: #6b7aa0;
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  /* ── Main content ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    padding: 0 0 80px;
+    max-width: 960px;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    padding: 36px 40px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  .page-desc {
+    margin-top: 8px;
+    color: var(--ink-2);
+    font-size: 14px;
+    max-width: 600px;
+  }
+  .kpi-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .kpi-val {
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .kpi-label {
+    font-size: 11px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .kpi-sep { width: 1px; background: var(--border); align-self: stretch; }
+
+  /* ── Phase timeline ── */
+  .timeline-section {
+    padding: 28px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+  .gantt {
+    display: grid;
+    gap: 8px;
+  }
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+  }
+  .gantt-label {
+    text-align: right;
+    color: var(--ink-2);
+    font-family: var(--mono);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .gantt-track {
+    position: relative;
+    height: 24px;
+    background: var(--panel);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .gantt-bar {
+    position: absolute;
+    top: 0; bottom: 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #fff;
+  }
+  .gantt-weeks {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .gantt-week-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+    font-size: 10px;
+    color: var(--ink-3);
+    font-family: var(--mono);
+  }
+  .phase-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .phase-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .phase-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── Epic sections ── */
+  .epic-section {
+    padding: 32px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .epic-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .epic-accent {
+    width: 4px;
+    align-self: stretch;
+    border-radius: 2px;
+    flex-shrink: 0;
+    min-height: 48px;
+  }
+  .epic-meta { flex: 1; }
+  .epic-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-bottom: 2px;
+  }
+  .epic-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .epic-desc {
+    margin-top: 5px;
+    color: var(--ink-2);
+    font-size: 13px;
+    max-width: 640px;
+  }
+  .epic-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+  .tag-phase { background: var(--panel-2); color: var(--ink-2); }
+  .tag-blocks { background: #fee2e2; color: #991b1b; }
+  .tag-milestone { background: #ede9fe; color: #5b21b6; }
+  @media (prefers-color-scheme: dark) {
+    .tag-blocks { background: #450a0a; color: #fca5a5; }
+    .tag-milestone { background: #2e1065; color: #c4b5fd; }
+  }
+  :root[data-theme="dark"] .tag-blocks { background: #450a0a; color: #fca5a5; }
+  :root[data-theme="dark"] .tag-milestone { background: #2e1065; color: #c4b5fd; }
+  :root[data-theme="light"] .tag-blocks { background: #fee2e2; color: #991b1b; }
+  :root[data-theme="light"] .tag-milestone { background: #ede9fe; color: #5b21b6; }
+
+  /* ── Feature accordion ── */
+  .feature-list { display: flex; flex-direction: column; gap: 10px; }
+  .feature-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .feature-toggle {
+    all: unset;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 14px;
+    cursor: pointer;
+    background: var(--panel);
+    transition: background .1s;
+  }
+  .feature-toggle:hover { background: var(--panel-2); }
+  .feature-toggle-icon {
+    font-size: 10px;
+    color: var(--ink-3);
+    transition: transform .15s;
+    line-height: 1;
+  }
+  .feature-card.open .feature-toggle-icon { transform: rotate(90deg); }
+  .feature-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    flex: 1;
+  }
+  .feature-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  .feature-effort-sum {
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .feature-body {
+    display: none;
+    padding: 0 14px 14px;
+    background: var(--surface);
+  }
+  .feature-card.open .feature-body { display: block; }
+
+  /* ── Story table ── */
+  .story-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 12.5px;
+  }
+  .story-table th {
+    text-align: left;
+    padding: 6px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--border);
+  }
+  .story-table td {
+    padding: 8px 8px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--ink-2);
+  }
+  .story-table tr:last-child td { border-bottom: none; }
+  .story-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .story-title { color: var(--ink); font-weight: 500; }
+  .story-notes { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+  .effort {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    white-space: nowrap;
+    font-family: var(--mono);
+  }
+  .effort-xs { background: var(--effort-xs); color: var(--effort-xs-t); }
+  .effort-s  { background: var(--effort-s);  color: var(--effort-s-t);  }
+  .effort-m  { background: var(--effort-m);  color: var(--effort-m-t);  }
+  .effort-l  { background: var(--effort-l);  color: var(--effort-l-t);  }
+  .done {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    white-space: nowrap;
+    font-family: var(--mono);
+    background: var(--done);
+    color: var(--done-t);
+    margin-left: 6px;
+  }
+  .partial {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    white-space: nowrap;
+    font-family: var(--mono);
+    background: var(--partial);
+    color: var(--partial-t);
+    margin-left: 6px;
+  }
+
+  /* ── Technical notes box ── */
+  .tech-note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--panel);
+    border-left: 3px solid var(--border);
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .tech-note strong { color: var(--ink); }
+
+  /* ── Dependency map ── */
+  .dep-map {
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dep-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .dep-card {
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .dep-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dep-card-title .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dep-list { font-size: 11px; color: var(--ink-3); line-height: 1.8; }
+
+  /* ── Scrollable table wrapper ── */
+  .tbl-wrap { overflow-x: auto; }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .page-header, .epic-section, .timeline-section, .dep-map { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">IOA Platform</div>
+    <div class="sidebar-subtitle">Enterprise Implementation Plan</div>
+  </div>
+
+  <div class="sidebar-section-label">Phase 1 — Quick Wins</div>
+  <a href="#ep310" class="sidebar-link">
+    <span class="sidebar-dot" style="background:var(--c-security)"></span>
+    Security Hardening
+    <span class="sidebar-badge">EP-310</span>
+  </a>
+  <a href="#ep308" class="sidebar-link">
+    <span class="sidebar-dot" style="background:var(--c-rbac)"></span>
+    Fine-grained RBAC
+    <span class="sidebar-badge">EP-308</span>
+  </a>
+
+  <div class="sidebar-section-label">Phase 2 — Core Blockers</div>
+  <a href="#ep306" class="sidebar-link">
+    <span class="sidebar-dot" style="background:var(--c-discovery)"></span>
+    MCP Discovery Engine
+    <span class="sidebar-badge">EP-306</span>
+  </a>
+  <a href="#ep307" class="sidebar-link">
+    <span class="sidebar-dot" style="background:var(--c-auth)"></span>
+    Enterprise Auth
+    <span class="sidebar-badge">EP-307</span>
+  </a>
+
+  <div class="sidebar-section-label">Phase 3 — Infrastructure</div>
+  <a href="#ep309" class="sidebar-link">
+    <span class="sidebar-dot" style="background:var(--c-deploy)"></span>
+    Deployment Package
+    <span class="sidebar-badge">EP-309</span>
+  </a>
+
+  <div class="sidebar-section-label">Phase 4 — Scale (v1.1)</div>
+  <a href="#ep311" class="sidebar-link">
+    <span class="sidebar-dot" style="background:var(--c-tenancy)"></span>
+    Multi-tenancy
+    <span class="sidebar-badge">EP-311</span>
+  </a>
+
+  <div class="sidebar-section-label">Reference</div>
+  <a href="#deps" class="sidebar-link">
+    <span class="sidebar-dot" style="background:var(--border)"></span>
+    Dependencies
+  </a>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-eyebrow">IOA Governance Platform · v1.0 → Enterprise</div>
+    <h1 class="page-title">Enterprise Deployment Implementation Plan</h1>
+    <p class="page-desc">Six epics, four phases, sixteen weeks to a corporate-deployable platform. Discovery and enterprise auth are the critical path; deployment packaging gates the first customer install.</p>
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-val">6</span><span class="kpi-label">Epics</span></div>
+      <div class="kpi-sep"></div>
+      <div class="kpi"><span class="kpi-val">16</span><span class="kpi-label">Features</span></div>
+      <div class="kpi-sep"></div>
+      <div class="kpi"><span class="kpi-val">54</span><span class="kpi-label">Stories</span></div>
+      <div class="kpi-sep"></div>
+      <div class="kpi"><span class="kpi-val">~16 wks</span><span class="kpi-label">Full timeline</span></div>
+      <div class="kpi-sep"></div>
+      <div class="kpi"><span class="kpi-val">~10 wks</span><span class="kpi-label">v1.0 enterprise gate</span></div>
+    </div>
+  </div>
+
+  <!-- Phase Gantt -->
+  <div class="timeline-section">
+    <div class="section-eyebrow">Phase Timeline — 16 Weeks</div>
+    <div class="gantt-weeks">
+      <div></div>
+      <div class="gantt-week-labels">
+        <span>W1</span><span>W2</span><span>W3</span><span>W4</span>
+        <span>W5</span><span>W6</span><span>W7</span><span>W8</span>
+        <span>W9</span><span>W10</span><span>W11</span><span>W12</span>
+        <span>W13</span><span>W14</span><span>W15</span><span>W16</span>
+      </div>
+    </div>
+    <div class="gantt">
+      <div class="gantt-row">
+        <div class="gantt-label">EP-310 Security</div>
+        <div class="gantt-track">
+          <div class="gantt-bar" style="left:0%;width:18.75%;background:var(--c-security)">Security Hardening</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">EP-308 RBAC</div>
+        <div class="gantt-track">
+          <div class="gantt-bar" style="left:0%;width:25%;background:var(--c-rbac)">Fine-grained RBAC</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">EP-306 Discovery</div>
+        <div class="gantt-track">
+          <div class="gantt-bar" style="left:12.5%;width:43.75%;background:var(--c-discovery)">MCP Discovery Engine</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">EP-307 Auth</div>
+        <div class="gantt-track">
+          <div class="gantt-bar" style="left:12.5%;width:31.25%;background:var(--c-auth)">Enterprise Auth (parallel)</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">EP-309 Deploy</div>
+        <div class="gantt-track">
+          <div class="gantt-bar" style="left:37.5%;width:31.25%;background:var(--c-deploy)">Deployment Package</div>
+        </div>
+      </div>
+      <div class="gantt-row">
+        <div class="gantt-label">EP-311 Tenancy</div>
+        <div class="gantt-track">
+          <div class="gantt-bar" style="left:56.25%;width:43.75%;background:var(--c-tenancy)">Multi-tenancy (v1.1)</div>
+        </div>
+      </div>
+    </div>
+    <div class="phase-legend">
+      <div class="phase-item"><div class="phase-dot" style="background:#e0e7ff"></div> Phase 1: Quick Wins (W1–W4)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:#d1fae5"></div> Phase 2: Core Blockers (W3–W8)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:#fef3c7"></div> Phase 3: Infrastructure (W7–W11)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:#ede9fe"></div> Phase 4: Scale / v1.1 (W10–W16)</div>
+    </div>
+  </div>
+
+  <!-- EP-310: Security Hardening -->
+  <div class="epic-section" id="ep310">
+    <div class="epic-header">
+      <div class="epic-accent" style="background:var(--c-security)"></div>
+      <div class="epic-meta">
+        <div class="epic-id">EP-310 · Phase 1 · Weeks 1–3 <span class="done">✓ SHIPPED</span></div>
+        <h2 class="epic-title">Security Hardening</h2>
+        <p class="epic-desc">Close the known security gaps that would fail any enterprise security review before work begins on the larger epics. These are all small, targeted fixes.</p>
+        <div class="epic-tags">
+          <span class="tag tag-phase">Phase 1</span>
+          <span class="tag tag-blocks">Unblocks all other epics</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-card open">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F1 · n8n Callback Authentication</span>
+          <span class="feature-id">EP-310-F1</span><span class="done">✓ DONE</span>
+          <span class="feature-effort-sum">~3 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-310-S1 <span class="done">✓</span></td>
+                <td><div class="story-title">HMAC-SHA256 signature on n8n webhook callbacks</div><div class="story-notes">n8n signs each callback with a shared secret; <code>workflow-governance-service</code> verifies <code>X-N8N-Signature</code> header before processing. Reject 401 on failure.</div></td>
+                <td><span class="effort effort-xs">XS · 2d</span></td>
+                <td>Shared secret in INTERNAL_SERVICE_KEY or new N8N_WEBHOOK_SECRET</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-310-S2 <span class="done">✓</span></td>
+                <td><div class="story-title">Replay-attack prevention — timestamp window check</div><div class="story-notes">Reject callbacks with <code>X-N8N-Timestamp</code> older than 5 minutes. Guards against captured-and-replayed webhook payloads.</div></td>
+                <td><span class="effort effort-xs">XS · 1d</span></td>
+                <td>Store recent nonces in Redis (already in compose)</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tech-note"><strong>Implementation:</strong> Add <code>src/lib/verify-callback.js</code> to <code>workflow-governance-service</code>. Apply as route-level middleware to the two n8n-facing routes that currently bypass <code>requireAuth</code>.</div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F2 · Rate Limiting & Security Headers</span>
+          <span class="feature-id">EP-310-F2</span><span class="done">✓ DONE</span>
+          <span class="feature-effort-sum">~4 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-310-S3 <span class="done">✓</span></td>
+                <td><div class="story-title">Kong rate-limit plugin on all IOA routes</div><div class="story-notes">Configure Kong's built-in <code>rate-limiting</code> plugin via <code>kong.yaml</code>: 100 req/min per consumer for API routes, 10 req/min for auth/login.</div></td>
+                <td><span class="effort effort-xs">XS · 1d</span></td>
+                <td>Add to kong-generator.js so it regenerates with config</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-310-S4 <span class="done">✓</span></td>
+                <td><div class="story-title">HTTP security headers middleware</div><div class="story-notes">Add <code>helmet</code> to all services: CSP, HSTS, X-Frame-Options, Referrer-Policy. SPA gets its own CSP that allows only the known API origin.</div></td>
+                <td><span class="effort effort-xs">XS · 1d</span></td>
+                <td>One <code>require-security-headers.js</code> in each service (same pattern as require-auth.js)</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-310-S5 <span class="done">✓</span></td>
+                <td><div class="story-title">Structured audit logging for all auth events</div><div class="story-notes">Every login, logout, failed auth, and permission denial must write to <code>audit.audit_events</code>. Currently only governance actions are logged.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Add <code>audit_service_client.js</code> to auth-service; call fire-and-forget on each auth event</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F3 · Secrets Hygiene</span>
+          <span class="feature-id">EP-310-F3</span><span class="done">✓ DONE</span>
+          <span class="feature-effort-sum">~3 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-310-S6 <span class="done">✓</span></td>
+                <td><div class="story-title">Remove hardcoded credentials from docker-compose.yml</div><div class="story-notes"><code>POSTGRES_PASSWORD: ioa</code> and similar are currently baked in. All sensitive values must come from <code>.env</code> with no fallback defaults in compose or source files.</div></td>
+                <td><span class="effort effort-xs">XS · 1d</span></td>
+                <td>Update compose-generator.js template; update .env.example</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-310-S7 <span class="done">✓</span></td>
+                <td><div class="story-title">Secret rotation procedure documentation + INTERNAL_SERVICE_KEY rotation script</div><div class="story-notes">Document the zero-downtime rotation sequence. Add a <code>scripts/rotate-service-key.sh</code> that updates the key in each running container without restart.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Referenced in .env.example comment "rotate with docs/Security-Operations.md"</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EP-308: Fine-grained RBAC -->
+  <div class="epic-section" id="ep308">
+    <div class="epic-header">
+      <div class="epic-accent" style="background:var(--c-rbac)"></div>
+      <div class="epic-meta">
+        <div class="epic-id">EP-308 · Phase 1 · Weeks 1–4 <span class="done">✓ SHIPPED</span></div>
+        <h2 class="epic-title">Fine-grained RBAC</h2>
+        <p class="epic-desc">Replace the coarse admin/guest model with named roles that map to real enterprise personas. A governance officer should not have the same access as a read-only auditor.</p>
+        <div class="epic-tags">
+          <span class="tag tag-phase">Phase 1</span>
+          <span class="tag tag-blocks">Required before first pilot</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-card open">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F1 · Role Definitions & Permission Matrix</span>
+          <span class="feature-id">EP-308-F1</span><span class="done">✓ DONE</span>
+          <span class="feature-effort-sum">~4 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-308-S1 <span class="done">✓</span></td>
+                <td><div class="story-title">Define 5 named roles in DB migration</div>
+                <div class="story-notes"><strong>governance-officer</strong> — approve/reject MCP, create/edit policies, resolve violations, manage waivers<br>
+                <strong>security-reviewer</strong> — review MCP servers, read all, add evidence, cannot approve<br>
+                <strong>business-owner</strong> — read own team's servers and workflows, submit registrations<br>
+                <strong>auditor</strong> — full read-only access + report export<br>
+                <strong>platform-admin</strong> — all access including user management</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Migration <code>auth/003_named_roles.sql</code>; seed defaults on first start</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-308-S2 <span class="done">✓</span></td>
+                <td><div class="story-title">Named permission constants replacing coarse read/write</div>
+                <div class="story-notes">Replace <code>'write'</code> with action-specific names: <code>mcp:approve</code>, <code>mcp:register</code>, <code>policy:edit</code>, <code>violation:resolve</code>, <code>waiver:grant</code>, <code>user:manage</code>. Embed resolved permission set in JWT.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Update <code>auth-service/src/lib/seed-admin.js</code>; update <code>require-auth.js</code> to check action-level claim</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F2 · Per-route Permission Guards</span>
+          <span class="feature-id">EP-308-F2</span><span class="done">✓ DONE</span>
+          <span class="feature-effort-sum">~5 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-308-S3 <span class="done">✓</span></td>
+                <td><div class="story-title">requirePermission(action) middleware helper</div>
+                <div class="story-notes">Extend <code>require-auth.js</code> with a curried <code>requirePermission('mcp:approve')</code> factory. Reads from JWT <code>permissions</code> claim array; 403 if absent.</div></td>
+                <td><span class="effort effort-xs">XS · 1d</span></td>
+                <td>Propagate across all 8 services via byte-identical copy (existing pattern)</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-308-S4 <span class="done">✓</span></td>
+                <td><div class="story-title">Annotate all mutating routes with required permission</div>
+                <div class="story-notes">Audit every <code>POST/PUT/PATCH/DELETE</code> across all 8 services. Apply <code>requirePermission</code> at route level. Document each route's required permission in a permissions matrix.</div></td>
+                <td><span class="effort effort-m">M · 3d</span></td>
+                <td>Highest-priority routes: MCP approval, policy edit, violation resolve, user management</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-308-S5 <span class="done">✓</span></td>
+                <td><div class="story-title">SPA permission-aware UI — hide/disable controls based on JWT claims</div>
+                <div class="story-notes">Add <code>usePermissions()</code> hook that reads decoded JWT claims. Use to hide Approve/Reject buttons, disable policy edit forms, and hide Admin section for non-platform-admins.</div></td>
+                <td><span class="effort effort-s">S · 1d</span></td>
+                <td>Never rely on UI hiding alone — server-side guards are the source of truth</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F3 · User & Role Management UI</span>
+          <span class="feature-id">EP-308-F3</span><span class="done">✓ DONE</span>
+          <span class="feature-effort-sum">~4 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-308-S6 <span class="done">✓</span></td>
+                <td><div class="story-title">User management page in Admin section</div>
+                <div class="story-notes">List users, create local users, assign roles, deactivate accounts. Requires <code>user:manage</code> permission. Follows existing AdminLayout pattern.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>New page: <code>web/src/pages/admin/UserManagement.jsx</code></td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-308-S7 <span class="done">✓</span></td>
+                <td><div class="story-title">auth-service user management endpoints</div>
+                <div class="story-notes"><code>GET /users</code>, <code>POST /users</code>, <code>PATCH /users/:id/roles</code>, <code>DELETE /users/:id</code>. All require <code>user:manage</code> permission.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Add to auth-service; update Kong routes if needed</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EP-306: MCP Discovery -->
+  <div class="epic-section" id="ep306">
+    <div class="epic-header">
+      <div class="epic-accent" style="background:var(--c-discovery)"></div>
+      <div class="epic-meta">
+        <div class="epic-id">EP-306 · Phase 2 · Weeks 3–9 · Critical Path <span class="done">✓ SHIPPED</span></div>
+        <h2 class="epic-title">MCP Discovery Engine</h2>
+        <p class="epic-desc">The most critical gap for corporate deployment. Without discovery, the platform requires clients to know what to govern before governance starts — which defeats the purpose. Three discovery vectors, delivered in order of coverage-per-effort.</p>
+        <div class="epic-tags">
+          <span class="tag tag-phase">Phase 2</span>
+          <span class="tag tag-blocks">Critical path for enterprise pitch</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-card open">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F1 · Config File Scanner (Highest ROI)</span>
+          <span class="feature-id">EP-306-F1</span><span class="done">✓ DONE</span>
+          <span class="feature-effort-sum">~4 weeks</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-306-S12 <span class="done">✓</span></td>
+                <td><div class="story-title">API key authentication for discovery-agent</div>
+                <div class="story-notes">New <code>auth.api_keys</code> table (name, key_hash, scopes[], created_by, last_used_at, revoked_at). <code>requireApiKey</code> checks an <code>X-IOA-Api-Key</code> header before falling through to session/service-key auth, resolving to a synthetic <code>req.user</code> scoped to only the key's granted permissions. <code>POST /auth/api-keys</code> (platform-admin/governance-officer, <code>user:manage</code>-gated, key shown once) and <code>DELETE /auth/api-keys/:id</code> to revoke.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td><strong>Added during scoping review:</strong> S1/S4's own notes assume "a dedicated API key (not a user JWT)" exists, but neither this epic nor EP-307 (Enterprise Auth) actually builds one — session-JWT and the single shared <code>INTERNAL_SERVICE_KEY</code> are the only two auth paths that exist today, and neither fits an unattended CLI running on a developer laptop or in CI. Blocks S1–S9; sequence first.</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S1 <span class="done">✓</span></td>
+                <td><div class="story-title">Claude Desktop config parser</div>
+                <div class="story-notes">Parse <code>~/.claude/claude_desktop_config.json</code> (and Windows/Linux equivalents) to extract <code>mcpServers</code> entries. Output: server name, command, args, env hints.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>New service: <code>discovery-agent</code> — a lightweight Node.js CLI, not a full Express service</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S2 <span class="done">✓</span></td>
+                <td><div class="story-title">VS Code MCP settings parser</div>
+                <div class="story-notes">Parse <code>.vscode/settings.json</code> and <code>~/.vscode/extensions/*/package.json</code> for MCP server registrations in the Claude/Cline extensions.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Same discovery-agent; different parser module</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S3 <span class="done">✓</span></td>
+                <td><div class="story-title">Cursor and Windsurf config parsers</div>
+                <div class="story-notes">Parse Cursor's <code>~/.cursor/mcp.json</code> and Windsurf's equivalent MCP config location. These two IDEs have fast-growing enterprise adoption.</div></td>
+                <td><span class="effort effort-xs">XS · 1d</span></td>
+                <td>Same pattern — just different paths and JSON schemas</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S4 <span class="done">✓</span></td>
+                <td><div class="story-title">Discovery report → IOA import API</div>
+                <div class="story-notes">Discovery agent sends discovered servers to <code>POST /mcp-governance/servers/discovery-import</code>. Each server submitted as a candidate with <code>status='discovered'</code> and source metadata. Idempotent on server name.</div></td>
+                <td><span class="effort effort-s">S · 3d</span></td>
+                <td>New status value <code>'discovered'</code> in mcp_servers; migration required. No unique constraint exists on <code>mcp_servers.name</code> today — the idempotent-upsert lookup needs to key off <code>(name, status='discovered')</code> explicitly, not rely on a DB constraint.</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S13 <span class="done">✓</span></td>
+                <td><div class="story-title">Discovery scan history + diff computation</div>
+                <div class="story-notes">New <code>mcp_governance.discovery_scans</code> table storing each run's raw results per source (config-file, GitHub, Docker, network). On each new scan, diff against the prior scan for the same discovered server (by name + source) and compute field-level changes (new tool, changed endpoint, etc.) for S5's review UI to render.</div></td>
+                <td><span class="effort effort-s">S · 3d</span></td>
+                <td><strong>Added during scoping review:</strong> S5 references a "diff view" but nothing upstream persists prior-scan state to diff against — this is the storage/computation S5's UI needs.</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S5 <span class="done">✓</span></td>
+                <td><div class="story-title">SPA: Discovery queue review UI</div>
+                <div class="story-notes">New tab in MCP Governance page: "Discovered" showing all <code>status='discovered'</code> servers. Governance officer can promote to <code>pending_review</code> (starts formal process) or dismiss. Diff view shows what changed since last discovery run.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td>This is the primary interaction surface for the discovery workflow</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tech-note"><strong>Architecture:</strong> <code>discovery-agent</code> is a standalone CLI package (<code>packages/discovery-agent/</code>) that runs locally on the developer's machine or via CI. It authenticates to the platform API using a dedicated API key (not a user JWT). It does not need to be always-running.</div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F2 · Platform Integration Importers</span>
+          <span class="feature-id">EP-306-F2</span>
+          <span class="feature-effort-sum">~2 weeks</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-306-S6</td>
+                <td><div class="story-title">n8n workflow → MCP server mapping (extend existing)</div>
+                <div class="story-notes">Extend the existing n8n importer to detect MCP tool calls within workflow nodes and auto-create discovery candidates for referenced servers not yet in the registry.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Already import n8n workflows — MCP refs are in workflow node definitions</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S7</td>
+                <td><div class="story-title">GitHub repository scanner for MCP usage</div>
+                <div class="story-notes">Scan a GitHub org or repo for <code>.claude/</code> directories, <code>mcp.json</code> files, and MCP SDK imports in code. Uses GitHub API. Outputs discovery candidates with repo source metadata.</div></td>
+                <td><span class="effort effort-m">M · 3d</span></td>
+                <td>Requires GitHub App or PAT with <code>repo:read</code> scope</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S8</td>
+                <td><div class="story-title">Docker / container environment scanner</div>
+                <div class="story-notes">Inspect running containers for MCP server process signatures (known binary names, port patterns, environment variables). Works via Docker socket or kubectl on K8s environments.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td>Highest-value for enterprises already running MCP in containers</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S9</td>
+                <td><div class="story-title">Scheduled discovery cron job</div>
+                <div class="story-notes">Configuration to run the discovery agent on a schedule (hourly, daily). New servers appear in the discovery queue automatically. Alert governance officer on new finds via escalation service.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Can use the existing Redis-backed job pattern or cron inside discovery-agent</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F3 · Network Passive Detection (Later)</span>
+          <span class="feature-id">EP-306-F3</span>
+          <span class="feature-effort-sum">~1 week</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-306-S10</td>
+                <td><div class="story-title">MCP protocol handshake detector (passive sniffer mode)</div>
+                <div class="story-notes">Listen on the network for MCP protocol <code>initialize</code> handshakes and <code>tools/list</code> responses. Fingerprints new servers by endpoint + server_info. Works without credentials.</div></td>
+                <td><span class="effort effort-m">M · 3d</span></td>
+                <td>Requires network access — deploy as a sidecar or network tap. Complex for cloud environments.</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-306-S11</td>
+                <td><div class="story-title">Kong access log MCP server extraction</div>
+                <div class="story-notes">Parse Kong's access logs for MCP protocol patterns in request paths. Since all traffic routes through Kong, this passively discovers what MCP servers are being called even if not registered.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Lowest friction for existing Kong-routed environments — no additional network access needed</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EP-307: Enterprise Auth -->
+  <div class="epic-section" id="ep307">
+    <div class="epic-header">
+      <div class="epic-accent" style="background:var(--c-auth)"></div>
+      <div class="epic-meta">
+        <div class="epic-id">EP-307 · Phase 2 · Weeks 3–7 · Parallel with EP-306 <span class="partial">◐ PARTIAL — CLI key exchange only</span></div>
+        <h2 class="epic-title">Enterprise Authentication</h2>
+        <p class="epic-desc">Replace local username/password with enterprise identity systems. OIDC is the highest-priority deliverable; SAML and LDAP follow. MFA is a hard requirement for any platform that can block AI tool execution.</p>
+        <div class="epic-tags">
+          <span class="tag tag-phase">Phase 2</span>
+          <span class="tag tag-blocks">Hard requirement for enterprise</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-card open">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F1 · OIDC / SSO Integration</span>
+          <span class="feature-id">EP-307-F1</span>
+          <span class="feature-effort-sum">~2 weeks</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-307-S1</td>
+                <td><div class="story-title">OIDC provider configuration in auth-service</div>
+                <div class="story-notes">Add <code>openid-client</code> library. Configure via env: <code>OIDC_ISSUER</code>, <code>OIDC_CLIENT_ID</code>, <code>OIDC_CLIENT_SECRET</code>, <code>OIDC_REDIRECT_URI</code>. Support Okta, Azure AD, Google Workspace, Keycloak.</div></td>
+                <td><span class="effort effort-s">S · 3d</span></td>
+                <td>auth-service gains <code>GET /auth/oidc/login</code> and <code>GET /auth/oidc/callback</code> routes</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-307-S2</td>
+                <td><div class="story-title">OIDC claims → IOA role mapping</div>
+                <div class="story-notes">Map OIDC group claims (<code>groups</code> or <code>roles</code>) to IOA roles via configurable mapping: <code>OIDC_ROLE_MAP={"security-team":"governance-officer","audit-team":"auditor"}</code>.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>JIT provisioning: user record created on first login if not exists</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-307-S3</td>
+                <td><div class="story-title">SPA OIDC login flow</div>
+                <div class="story-notes">When OIDC is configured, show "Sign in with SSO" button on login page. Redirect to provider, handle callback, exchange for IOA JWT. Fall back to local login only if explicitly enabled.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Update <code>web/src/pages/Login.jsx</code>; detect OIDC via <code>GET /auth/config</code> endpoint</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-307-S4</td>
+                <td><div class="story-title">SAML 2.0 support (for legacy enterprise IdPs)</div>
+                <div class="story-notes">Add <code>samlify</code> or <code>passport-saml</code>. Configure via SP metadata endpoint. Required for older Okta orgs and Microsoft ADFS environments that haven't moved to OIDC.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td>Can defer to 1.1 if OIDC covers first pilot customer</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F2 · MFA</span>
+          <span class="feature-id">EP-307-F2</span>
+          <span class="feature-effort-sum">~1 week</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-307-S5</td>
+                <td><div class="story-title">TOTP MFA for local auth (Google Authenticator / Authy)</div>
+                <div class="story-notes">Add <code>otplib</code> to auth-service. <code>POST /auth/mfa/setup</code> returns QR code, <code>POST /auth/mfa/verify</code> validates TOTP. MFA required for <code>governance-officer</code> and <code>platform-admin</code> roles.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td>Store TOTP secret encrypted in <code>auth.users</code>; migration required. OIDC logins delegate MFA to the IdP — no extra work.</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-307-S6</td>
+                <td><div class="story-title">MFA enforcement policy — block high-privilege actions without MFA</div>
+                <div class="story-notes">Short-lived elevated JWT (15 min) issued after MFA verification. Server requires <code>mfa_verified: true</code> claim for <code>mcp:approve</code>, <code>waiver:grant</code>, and <code>user:manage</code> actions.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Pattern: "sudo mode" — existing JWT still valid for read; elevated token required for writes on high-privilege routes</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F3 · Session Management</span>
+          <span class="feature-id">EP-307-F3</span>
+          <span class="feature-effort-sum">~4 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-307-S7</td>
+                <td><div class="story-title">Refresh token rotation with Redis session store</div>
+                <div class="story-notes">Current 60-minute JWT has no refresh. Add refresh token (7-day) stored in Redis. Implement <code>POST /auth/refresh</code>. Invalidate all sessions on role change or account deactivation.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Redis is already in compose; use it here</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-307-S8</td>
+                <td><div class="story-title">Active session list + force-logout for admins</div>
+                <div class="story-notes"><code>GET /auth/sessions</code> lists active sessions for a user. <code>DELETE /auth/sessions/:id</code> invalidates a specific session. <code>DELETE /auth/sessions/all</code> for full force-logout (user:manage required).</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Add session management tab to User Management page in Admin section</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EP-309: Deployment Package -->
+  <div class="epic-section" id="ep309">
+    <div class="epic-header">
+      <div class="epic-accent" style="background:var(--c-deploy)"></div>
+      <div class="epic-meta">
+        <div class="epic-id">EP-309 · Phase 3 · Weeks 7–11 <span class="partial" style="background:var(--border);color:var(--ink-2)">○ NOT STARTED</span></div>
+        <h2 class="epic-title">Deployment Package</h2>
+        <p class="epic-desc">Make the platform installable by a corporate IT team without needing the original developers involved. Helm chart, TLS, and externalized secrets management are the three gates.</p>
+        <div class="epic-tags">
+          <span class="tag tag-phase">Phase 3</span>
+          <span class="tag tag-blocks">Gates first customer install</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-card open">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F1 · Helm Chart</span>
+          <span class="feature-id">EP-309-F1</span>
+          <span class="feature-effort-sum">~2 weeks</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-309-S1</td>
+                <td><div class="story-title">Helm chart scaffold for all 9 services</div>
+                <div class="story-notes">Create <code>helm/ioa-governance/</code> with a single chart covering all services. Use subcharts for DB (TimescaleDB Helm chart) and Redis. <code>values.yaml</code> exposes every tunable without editing templates.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td>Extends existing K8s manifests; they become the template source</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-309-S2</td>
+                <td><div class="story-title">values.yaml profiles: minimal, standard, ha</div>
+                <div class="story-notes"><strong>minimal</strong>: 1 replica each, no HA DB — for pilots and dev<br><strong>standard</strong>: 2 replicas, managed DB external<br><strong>ha</strong>: 3 replicas, TimescaleDB HA cluster, Redis Sentinel</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Each profile is a <code>values-minimal.yaml</code> override file</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-309-S3</td>
+                <td><div class="story-title">Migration Job as Kubernetes Job resource</div>
+                <div class="story-notes">Convert <code>db/migrate.js</code> to a K8s <code>Job</code> that runs on <code>helm install/upgrade</code> as a Helm hook. Eliminates the manual "run migrations" step.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Use <code>helm.sh/hook: pre-upgrade,pre-install</code> annotation</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-309-S4</td>
+                <td><div class="story-title">Ingress with TLS termination (nginx/traefik)</div>
+                <div class="story-notes">Helm chart includes ingress resource with TLS annotations for cert-manager (<code>cert-manager.io/cluster-issuer: letsencrypt-prod</code>). Single hostname routes all service traffic through Kong.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Kong sits behind the ingress; ingress handles TLS, Kong handles routing</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F2 · TLS Everywhere</span>
+          <span class="feature-id">EP-309-F2</span>
+          <span class="feature-effort-sum">~4 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-309-S5</td>
+                <td><div class="story-title">cert-manager integration for auto-certificate provisioning</div>
+                <div class="story-notes">Add cert-manager as a Helm dependency. Configure <code>ClusterIssuer</code> for Let's Encrypt (public) and a self-signed issuer for internal namespaces. Certificates auto-renew.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Alternatively: support BYO certificate via secret name in values.yaml</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-309-S6</td>
+                <td><div class="story-title">Internal mTLS between services (Istio or cert-manager)</div>
+                <div class="story-notes">Service-to-service traffic inside the cluster must use mTLS. Preferably via a service mesh (Istio, Linkerd) but can be done with per-service certificates from cert-manager if no mesh is available.</div></td>
+                <td><span class="effort effort-m">M · 3d</span></td>
+                <td>Flag as optional in values.yaml (<code>mtls.enabled: true</code>) — requires cluster support</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F3 · External Secrets Management</span>
+          <span class="feature-id">EP-309-F3</span>
+          <span class="feature-effort-sum">~5 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-309-S7</td>
+                <td><div class="story-title">External Secrets Operator integration</div>
+                <div class="story-notes">Use the External Secrets Operator to sync secrets from AWS Secrets Manager, Azure Key Vault, or HashiCorp Vault into K8s Secrets. Helm chart generates <code>ExternalSecret</code> resources pointing at configurable store.</div></td>
+                <td><span class="effort effort-m">M · 3d</span></td>
+                <td>Three store backends: AWS, Azure, Vault — configure via <code>secretStore.type</code> in values.yaml</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-309-S8</td>
+                <td><div class="story-title">Remove all .env file dependencies from K8s deployment path</div>
+                <div class="story-notes">K8s deployment must work with zero .env files. All secrets come from K8s Secrets (backed by ESO or manually created). .env file path remains for docker-compose dev only.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Update all service Dockerfiles to not expect .env at runtime</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F4 · Platform Observability</span>
+          <span class="feature-id">EP-309-F4</span>
+          <span class="feature-effort-sum">~4 days</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-309-S9</td>
+                <td><div class="story-title">Prometheus metrics endpoint on all services</div>
+                <div class="story-notes">Add <code>prom-client</code> to each service. Expose <code>GET /metrics</code>. Standard: request latency, error rate, DB pool saturation. Custom: violation count by severity, anomaly alerts by type.</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>Reuse require-auth.js pattern — single metrics.js added to each service</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-309-S10</td>
+                <td><div class="story-title">Structured JSON logging with correlation IDs</div>
+                <div class="story-notes">Replace <code>console.log</code> with <code>pino</code> structured logger. All log lines include: service, level, correlation_id (from request header), timestamp. Enables log aggregation (Loki, Datadog, CloudWatch).</div></td>
+                <td><span class="effort effort-s">S · 2d</span></td>
+                <td>One <code>logger.js</code> shared pattern; add to each service</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EP-311: Multi-tenancy -->
+  <div class="epic-section" id="ep311">
+    <div class="epic-header">
+      <div class="epic-accent" style="background:var(--c-tenancy)"></div>
+      <div class="epic-meta">
+        <div class="epic-id">EP-311 · Phase 4 · Weeks 10–16 · v1.1 Milestone <span class="partial" style="background:var(--border);color:var(--ink-2)">○ NOT STARTED</span></div>
+        <h2 class="epic-title">Multi-tenancy</h2>
+        <p class="epic-desc">Enable a single deployment to serve multiple business units with data isolation. The CISO and platform-admin see everything; each business unit sees only their own data. This is complex — scope carefully.</p>
+        <div class="epic-tags">
+          <span class="tag tag-phase">Phase 4</span>
+          <span class="tag tag-milestone">v1.1 Milestone</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-card open">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F1 · Organisation & Business Unit Model</span>
+          <span class="feature-id">EP-311-F1</span>
+          <span class="feature-effort-sum">~3 weeks</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-311-S1</td>
+                <td><div class="story-title">org_id + team_id columns on all tenant-scoped tables</div>
+                <div class="story-notes">Add <code>org_id UUID NOT NULL</code> and optional <code>team_id UUID</code> to: <code>mcp_servers</code>, <code>workflows</code>, <code>violations</code>, <code>policies</code>, <code>audit_events</code>. Non-nullable with DEFAULT for current single-org data.</div></td>
+                <td><span class="effort effort-l">L · 5d</span></td>
+                <td>Most invasive migration in the plan — all existing data needs org_id assigned. Create <code>public.organisations</code> table first.</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-311-S2</td>
+                <td><div class="story-title">Row-level security (RLS) policies on all tenant tables</div>
+                <div class="story-notes">Enable Postgres RLS on all org-scoped tables. Policy: <code>USING (org_id = current_setting('app.current_org_id')::uuid)</code>. Each service sets this setting on the connection from the JWT claim.</div></td>
+                <td><span class="effort effort-l">L · 5d</span></td>
+                <td>Requires updating all service db.js connection setup. Test extensively — RLS bypasses are subtle.</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-311-S3</td>
+                <td><div class="story-title">Organisation management UI and API</div>
+                <div class="story-notes">platform-admin can create organisations, invite users, assign org-level roles. Each org gets its own governance-officer and auditor roles scoped to that org.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td>New Admin page: Organisation Management</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <button class="feature-toggle" onclick="toggleFeature(this)">
+          <span class="feature-toggle-icon">▶</span>
+          <span class="feature-name">F2 · Cross-tenant Governance (CISO View)</span>
+          <span class="feature-id">EP-311-F2</span>
+          <span class="feature-effort-sum">~2 weeks</span>
+        </button>
+        <div class="feature-body">
+          <div class="tbl-wrap">
+          <table class="story-table">
+            <thead><tr><th>ID</th><th>Story</th><th>Effort</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="story-id">EP-311-S4</td>
+                <td><div class="story-title">Platform-admin bypass for RLS (aggregate queries)</div>
+                <div class="story-notes">platform-admin role bypasses RLS to see all orgs. Requires a separate DB role (<code>ioa_superuser</code>) with <code>BYPASSRLS</code>. Used only for aggregate Dashboard queries — not exposed through normal service path.</div></td>
+                <td><span class="effort effort-m">M · 3d</span></td>
+                <td>Audit every use of BYPASSRLS — this is a privileged path</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-311-S5</td>
+                <td><div class="story-title">Organisation-scoped policy inheritance</div>
+                <div class="story-notes">Platform-level policies (owned by org_id=platform) apply to all orgs. Each org can add org-specific policies. Business unit can add team-specific policies. Violation evaluation walks the inheritance chain.</div></td>
+                <td><span class="effort effort-l">L · 5d</span></td>
+                <td>Significant policy engine change — design carefully before implementing</td>
+              </tr>
+              <tr>
+                <td class="story-id">EP-311-S6</td>
+                <td><div class="story-title">Aggregate CISO dashboard</div>
+                <div class="story-notes">New Dashboard view (platform-admin only) showing: open violations by org, MCP servers pending review across all orgs, anomaly alert counts by org, compliance posture heatmap.</div></td>
+                <td><span class="effort effort-m">M · 4d</span></td>
+                <td>New page: <code>web/src/pages/CISODashboard.jsx</code> — accessible only with platform-admin role</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dependencies -->
+  <div class="dep-map" id="deps">
+    <div class="section-eyebrow">Epic Dependencies</div>
+    <div class="dep-grid">
+      <div class="dep-card">
+        <div class="dep-card-title"><div class="dot" style="background:var(--c-discovery)"></div> EP-306 Discovery</div>
+        <div class="dep-list">
+          Depends on: EP-308 RBAC (for <code>mcp:register</code> permission)<br>
+          Blocks: nothing else — standalone value<br>
+          Parallel with: EP-307 Auth
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-card-title"><div class="dot" style="background:var(--c-auth)"></div> EP-307 Enterprise Auth</div>
+        <div class="dep-list">
+          Depends on: EP-308 RBAC (roles must exist before mapping)<br>
+          Blocks: EP-311 Multi-tenancy (org claim in JWT needed)<br>
+          Parallel with: EP-306 Discovery
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-card-title"><div class="dot" style="background:var(--c-rbac)"></div> EP-308 RBAC</div>
+        <div class="dep-list">
+          Depends on: EP-310 Security (auth events must be logged)<br>
+          Blocks: EP-306, EP-307, EP-311<br>
+          <strong>Start first</strong> — everything depends on it
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-card-title"><div class="dot" style="background:var(--c-deploy)"></div> EP-309 Deployment</div>
+        <div class="dep-list">
+          Depends on: EP-310 (secrets hygiene), EP-307 (OIDC env vars)<br>
+          Blocks: first customer install<br>
+          Can start F1 (Helm) independently of auth
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-card-title"><div class="dot" style="background:var(--c-security)"></div> EP-310 Security</div>
+        <div class="dep-list">
+          Depends on: nothing — start day 1<br>
+          Blocks: EP-308, EP-309<br>
+          <strong>Start first</strong> — foundational
+        </div>
+      </div>
+      <div class="dep-card">
+        <div class="dep-card-title"><div class="dot" style="background:var(--c-tenancy)"></div> EP-311 Multi-tenancy</div>
+        <div class="dep-list">
+          Depends on: EP-307 (org claim in JWT), EP-308 (org-scoped roles)<br>
+          Blocks: nothing<br>
+          <strong>v1.1 only</strong> — do not start until EP-307/308 are complete
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function toggleFeature(btn) {
+  const card = btn.closest('.feature-card');
+  card.classList.toggle('open');
+}
+
+const sections = document.querySelectorAll('.epic-section, .dep-map');
+const links = document.querySelectorAll('.sidebar-link');
+function updateActive() {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) current = s.id;
+  });
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', updateActive, { passive: true });
+updateActive();
+</script>
+
+</body>
+</html>

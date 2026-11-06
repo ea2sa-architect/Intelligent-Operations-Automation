@@ -1,0 +1,19 @@
+{
+  "name": "api-docs",
+  "version": "1.0.0",
+  "description": "Unified Swagger UI hub for all IOA Governance Platform APIs",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "helmet": "^7.2.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

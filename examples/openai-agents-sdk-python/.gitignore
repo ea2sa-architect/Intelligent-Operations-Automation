@@ -1,0 +1,10 @@
+# Real credentials — .env.example/.env.admin.example are the templates,
+# never these.
+.env
+.env.admin
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/

@@ -1,0 +1,39 @@
+{
+  "schema": "ioa.policy-bundle/v1",
+  "policies": [
+    {
+      "name": "PII Output Protection",
+      "description": "Detect PII leaving workflows and restrict where workflow output may be sent.",
+      "bundle_version": "1.0.0",
+      "requested_mode": "observe",
+      "rules": [
+        {
+          "name": "pii-in-output",
+          "rule_type": "pii_detection",
+          "severity": "high",
+          "enabled": true,
+          "priority": 0,
+          "config": {
+            "actions": ["flag_workflow", "generate_event"],
+            "inspection_targets": ["webhook_payload", "http_body", "email"],
+            "sensitive_fields": ["SSN", "DOB", "credit_card", "email"]
+          }
+        },
+        {
+          "name": "external-destinations",
+          "rule_type": "outbound_domain",
+          "severity": "high",
+          "enabled": true,
+          "priority": 1,
+          "config": {
+            "actions": ["flag_workflow", "alert_team"],
+            "allowed_domains": ["api.openai.com", "hooks.slack.com"],
+            "block_unlisted": "true",
+            "exempt_private_ranges": "true"
+          }
+        }
+      ],
+      "bindings": []
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+# Production schema-migration image (run as a Job by k8s/20-migrate).
+# Build context is ./db:  docker build -f db/Dockerfile.migrate -t ioa-governance/migrate:<tag> db
+FROM node:20-alpine
+WORKDIR /app
+RUN npm init -y >/dev/null && npm pkg set type=module >/dev/null && npm i pg@8 --omit=dev --silent
+COPY . ./db
+USER node
+CMD ["node", "db/migrate.js"]

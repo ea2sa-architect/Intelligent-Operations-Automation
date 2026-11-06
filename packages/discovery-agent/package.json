@@ -1,0 +1,19 @@
+{
+  "name": "discovery-agent",
+  "version": "0.1.0",
+  "description": "IOA MCP Discovery Engine — standalone CLI that scans local config files for MCP server registrations and reports them to the IOA platform",
+  "type": "module",
+  "bin": {
+    "discovery-agent": "./bin/discovery-agent.js"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.9"
+  }
+}

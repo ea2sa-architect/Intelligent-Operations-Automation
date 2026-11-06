@@ -1,0 +1,41 @@
+# EP-306-S9 — the preferred way to run discovery-agent on a schedule: an
+# external scheduler invoking the stateless `scan --import` command, rather
+# than a long-running process. Hand-authored (discovery-agent isn't one of
+# the 8 bootstrap-generated services), matching the namespace and image
+# registry convention those generated manifests use.
+#
+# Requires a "discovery-agent-credentials" Secret in the ioa-governance
+# namespace with an "api-key" entry — create it out of band, e.g.:
+#   kubectl create secret generic discovery-agent-credentials \
+#     --namespace ioa-governance --from-literal=api-key=<raw ioak_... key>
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: discovery-agent
+  namespace: ioa-governance
+  labels:
+    app: discovery-agent
+spec:
+  # Hourly by default — adjust to taste (e.g. "0 3 * * *" for daily at 03:00).
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: discovery-agent
+              image: ghcr.io/ioa-governance/discovery-agent:latest
+              args: ["scan", "--import"]
+              env:
+                - name: IOA_API_URL
+                  value: "http://kong-gateway.kong-net.svc.cluster.local:8000"
+                - name: IOA_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: discovery-agent-credentials
+                      key: api-key

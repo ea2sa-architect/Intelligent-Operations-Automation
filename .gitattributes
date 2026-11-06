@@ -1,0 +1,7 @@
+# n8nac auto-generated files — always take the remote version on merge conflict.
+# Driver definition lives in .git/config (local, not tracked).
+.n8nac/ai-context.json                    merge=n8nac-auto
+AGENTS.md                                 merge=n8nac-auto
+n8nac-config.json                         merge=n8nac-auto
+.github/agents/n8n-architect.agent.md     merge=n8nac-auto
+.agents/skills/n8n-architect/SKILL.md     merge=n8nac-auto

@@ -1,0 +1,7 @@
+FROM node:{{nodeVersion}}-alpine AS base
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --omit=dev
+COPY . .
+EXPOSE {{port}}
+CMD ["node", "index.js"]

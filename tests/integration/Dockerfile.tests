@@ -1,0 +1,4 @@
+FROM node:20-alpine
+WORKDIR /tests
+COPY tests/integration/scenarios ./scenarios
+CMD ["node", "--test", "scenarios/"]

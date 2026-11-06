@@ -1,0 +1,27 @@
+project_name: ioa-governance-platform
+languages:
+  - javascript
+  - typescript
+root_dirs:
+  - services
+  - web
+  - packages
+  - bootstrap
+  - db
+  - workflows
+  - scripts
+entry_points:
+  - services/governance-service/index.js
+  - services/ai-inference-service/index.js
+  - services/audit-service/index.js
+  - services/escalation-service/index.js
+  - services/telemetry-service/index.js
+  - services/workflow-governance-service/index.js
+  - services/mcp-governance-service/index.js
+  - services/auth-service/index.js
+  - services/api-docs/index.js
+  - web/src/main.jsx
+  - packages/ioa-cli/bin/ioa.js
+  - packages/discovery-agent/bin/discovery-agent.js
+  - bootstrap/bootstrap-platform.js
+detected_at: '2026-08-01T20:14:10.381023Z'

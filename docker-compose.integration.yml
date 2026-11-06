@@ -1,0 +1,94 @@
+# Hand-authored integration-test harness (S2.4) — NOT generated, not touched by
+# `npm run bootstrap`. Fully isolated from the dev stack: own project name, own
+# throwaway database, no host ports, and no kong-net (shared Kong is not ours;
+# tests hit services directly — see work/epics/e2-iso42001-hardening/design.md).
+# Run via tests/integration/run.sh, which supplies the secrets in .env.integration.
+name: ioa-integration
+
+x-service-env: &service-env
+  NODE_ENV: test
+  AUTH_JWT_PUBLIC_KEY: ${AUTH_JWT_PUBLIC_KEY}
+  INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
+
+x-db-url: &db-url postgresql://ioa:${POSTGRES_PASSWORD}@db:5432/ioa_governance
+
+services:
+  db:
+    image: timescale/timescaledb:latest-pg16
+    environment:
+      POSTGRES_DB: ioa_governance
+      POSTGRES_USER: ioa
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Skip timescaledb-tune: it sizes memory for production and panics on hosts
+      # where /sys/fs/cgroup/memory.max isn't readable (the CI agent). Pointless
+      # for a throwaway test DB.
+      NO_TS_TUNE: 'true'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U ioa -d ioa_governance']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    build:
+      context: .
+      dockerfile: tests/integration/Dockerfile.migrate
+    environment:
+      DATABASE_URL: *db-url
+    depends_on:
+      db:
+        condition: service_healthy
+
+  audit-service:
+    build: ./services/audit-service
+    environment:
+      <<: *service-env
+      PORT: '3302'
+      DATABASE_URL: *db-url
+      DB_SCHEMA: audit
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:3302/health']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  auth-service:
+    build: ./services/auth-service
+    environment:
+      <<: *service-env
+      PORT: '3307'
+      DATABASE_URL: *db-url
+      DB_SCHEMA: auth
+      AUTH_JWT_PRIVATE_KEY: ${AUTH_JWT_PRIVATE_KEY}
+      AUTH_ADMIN_USERNAME: it-admin
+      AUTH_ADMIN_PASSWORD: ${IT_ADMIN_PASSWORD}
+      AUDIT_SERVICE_URL: http://audit-service:3302
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      audit-service:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:3307/health']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  tests:
+    build:
+      context: .
+      dockerfile: tests/integration/Dockerfile.tests
+    environment:
+      AUTH_URL: http://auth-service:3307
+      AUDIT_URL: http://audit-service:3302
+      INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY}
+      IT_ADMIN_USERNAME: it-admin
+      IT_ADMIN_PASSWORD: ${IT_ADMIN_PASSWORD}
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      audit-service:
+        condition: service_healthy
